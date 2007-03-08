@@ -233,15 +233,15 @@ void Juego::loop()
        r.shaderSombra->matProy=matPSha;
        r.shaderSombra->matVista=matVSha;
        if(r.esq){
-         r.mesh->dibujar(r.shaderSombra,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses,true);
+      //   r.mesh->dibujar(r.shaderSombra,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses,true);
        }else{
-         r.mesh->dibujar(r.shaderSombra,r.ent->getMatModelo(),true);
+        // r.mesh->dibujar(r.shaderSombra,r.ent->getMatModelo(),true);
        }
    }
    if(repMapa->meshUnica){
-       repMapa->meshUnica->dibujar(shaders[5].get(),mat4(1.0f));
+       //repMapa->meshUnica->dibujar(shaders[5].get(),mat4(1.0f));
    }else for(unique_ptr<MeshBloque>& mesh:repMapa->meshes){
-       mesh->dibujar(shaders[5].get(),mat4(1.0f));
+       //mesh->dibujar(shaders[5].get(),mat4(1.0f));
    }
    shadowMap.unbind();
    glViewport(0,0,1024,680);   
@@ -275,7 +275,7 @@ void Juego::loop()
 //           r.mesh->dibujar(r.shaderBorde,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses,false);
        }else{
            r.mesh->dibujar(r.shader,r.ent->getMatModelo());
-  //         r.mesh->dibujar(r.shaderBorde,r.ent->getMatModelo(),false);
+//           r.mesh->dibujar(r.shaderBorde,r.ent->getMatModelo(),false);
        }
    }
    if(repMapa->meshUnica){
