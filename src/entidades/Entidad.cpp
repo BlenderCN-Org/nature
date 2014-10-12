@@ -2,12 +2,15 @@
 
 Entidad::Entidad()
 {
-
 }
 
 Entidad::~Entidad()
 {
      //dtor
+}
+Cubo Entidad::getCubo(){
+    Cubo c{glm::vec3(pos.x-0.5f,pos.y-0.5,pos.z),glm::vec3(pos.x+0.5f,pos.y+0.5f,pos.z+2.0f)};
+    return c;
 }
  glm::mat4  Entidad::getMatModelo(){
 

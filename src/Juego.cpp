@@ -6,6 +6,7 @@
 #include "RepresentacionMapa.h"
 #include <queue>
 #include <thread>
+#include "fisica/Colisionador.h"
 
 using namespace std;
 Juego::Juego():
@@ -16,11 +17,10 @@ camara(45.0f, (float)600.0 / (float)600.0, 0.1f, 1200.f)
      Shader* s=new Shader(GestorRutas::getRutaShader("basico.vert"),GestorRutas::getRutaShader("basico.frag"));
      shaders.push_back( unique_ptr<Shader>(s));
      rep.mesh= unique_ptr<Mesh>(new Mesh("capibara"));
-     rep.entidad.pos=glm::vec3(0.0,0.0,0.0);
+     rep.entidad.pos=glm::vec3(3.0,3.0,6.0);
      generarMapa();
      mapa.detectarBordes();
      camara.desplazar(glm::vec3(0,-20,0));
-
      camara.rotar(glm::vec3(90,0,0));
      repMapa.reset(new RepresentacionMapa(mapa));
 
@@ -80,11 +80,17 @@ void Juego::generarMapa()
 void Juego::loop()
 {
    t.actualizar();
+   Colisionador col;
+   bool detener{false};
    shaders[0]->matProy=camara.getMatProy();
    shaders[0]->matVista=camara.getMatVista();
-   
-   rep.entidad.rotar(glm::vec3(0,0,20.0*t.delta()));
-   #fisica.aplicar(rep.entidad,t.delta());
+   if(!detener&&col.revColision(rep.entidad,mapa).colisiona){
+       detener =true;
+   }
+   if(!detener){ 
+       rep.entidad.rotar(glm::vec3(0,0,20.0*t.delta()));
+       fisica.aplicar(rep.entidad,t.delta());
+   }
    rep.mesh.get()->dibujar(shaders[0].get(),rep.entidad.getMatModelo());
    for(unique_ptr<MeshBloque>& mesh:repMapa->meshes){
      mesh->dibujar(shaders[0].get(),glm::mat4(1.0));

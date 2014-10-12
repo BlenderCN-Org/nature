@@ -7,13 +7,14 @@
 #include <random>
 #include <vector>
 using namespace std;
-Mapa::Mapa(int bloqx,int bloqy,int bloqz):
+Mapa::Mapa(int bloqx,int bloqy,int bloqz,float tamCubo):
      nbloqx{bloqx},
      nbloqy{bloqy},
      nbloqz{bloqz},
      tamx{bloqx*TAMANO_BLOQUE},
      tamy{bloqy*TAMANO_BLOQUE},
      tamz{bloqz*TAMANO_BLOQUE},
+     tamCubo{tamCubo},
      datos{static_cast<vector<Voxel>::size_type>( tamx*tamy*tamz),Voxel{}}
 {
      for(int bz=0;bz<bloqz;++bz){
@@ -26,6 +27,9 @@ Mapa::Mapa(int bloqx,int bloqy,int bloqz):
 
 }
 
+float Mapa::getTamCubo(){
+     return tamCubo;
+}
 
 int Mapa::getTamX(){
      return tamx;
@@ -53,7 +57,11 @@ bool Mapa::enRango(int x,int y,int z){
 }
 Voxel& Mapa::getVoxel(int x,int y,int z){
     return datos[tamy*tamx*z+y*tamx+x];
+}
+Cubo Mapa::getCuboVoxel(int x,int y,int z){
+    Cubo c{glm::vec3(x-tamCubo/2,y-tamCubo/2,z-tamCubo/2),glm::vec3(tamCubo,tamCubo,tamCubo)};
 
+    return c;
 }
 
 void Mapa::setVoxel(int x,int y,int z,Voxel v){

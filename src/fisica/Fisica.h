@@ -8,7 +8,7 @@ class Fisica{
         /*}}}*/
 
     private:
-        /*fuerzas {{{*/
+       /*fuerzas {{{*/
         float gravedad=-9.8;
         /*}}}*/
 };
