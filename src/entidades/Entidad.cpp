@@ -2,6 +2,7 @@
 
 Entidad::Entidad()
 {
+   vel=glm::vec3(0,0,0);
 }
 
 Entidad::~Entidad()

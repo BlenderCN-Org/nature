@@ -8,6 +8,7 @@ class Entidad
           Entidad();
           virtual ~Entidad();
           glm::vec3 pos;
+          glm::vec3 vel;
           glm::quat direccion;
           glm::mat4x4 getMatModelo();
           Cubo getCubo();

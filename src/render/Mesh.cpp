@@ -12,14 +12,14 @@ Mesh::Mesh( string nombre)
        if(!f.is_open()){
            cout<<"error abriendo"<<GestorRutas::getRutaMesh(nombre)<< endl;
        }else{
-
+            glm::vec3 vmin=glm::vec3(1000.0f,1000.0f,1000.0f);
             f.read((char*)&nvert,sizeof(int));
               cout<<sizeof(int)<<":vertices="<<nvert<< endl;
             if(nvert>0){
                //vert= unique_ptr<float>(new float[nvert*3]);
-                unique_ptr<float[]> vert{new float[nvert*3]};
-                unique_ptr<float[]> normal{new float[nvert*3]};
-                unique_ptr<float[]> colores{new float[nvert*3]};
+               unique_ptr<float[]> vert{new float[nvert*3]};
+               unique_ptr<float[]> normal{new float[nvert*3]};
+               unique_ptr<float[]> colores{new float[nvert*3]};
 
                //4=TAMANO_FLOAT
                f.read((char*)vert.get(),sizeof(float)*nvert*3);
@@ -27,8 +27,10 @@ Mesh::Mesh( string nombre)
                f.read((char*)colores.get(),sizeof(float)*nvert*3);
                f.read((char*)&ncaras,sizeof(int));
                for(int i=0;i<nvert;i++){
-                 //  cout<<"n("<<normal.get()[3*i]<<","<<normal.get()[3*i+1]<<","<<normal.get()[3*i+2]<<")"<< endl;
+                   vmin=glm::min(vmin,glm::vec3(normal.get()[3*i],normal.get()[3*i+1],normal.get()[3*i+2]));
+                   //cout<<"n("<<normal.get()[3*i]<<","<<normal.get()[3*i+1]<<","<<normal.get()[3*i+2]<<")"<< endl;
                }
+               cout<<"vmin("<<vmin.x<<","<<vmin.y<<","<<vmin.z<<")"<<endl;
                if(ncaras>0){
                        unique_ptr<int> caras{new int[ncaras*3]};
                       f.read((char*)caras.get(),sizeof(int)*ncaras*3);

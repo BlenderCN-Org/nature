@@ -7,6 +7,7 @@
 #include <queue>
 #include <thread>
 #include "fisica/Colisionador.h"
+#include "config.h"
 
 using namespace std;
 Juego::Juego():
@@ -18,6 +19,7 @@ camara(45.0f, (float)600.0 / (float)600.0, 0.1f, 1200.f)
      shaders.push_back( unique_ptr<Shader>(s));
      rep.mesh= unique_ptr<Mesh>(new Mesh("capibara"));
      rep.entidad.pos=glm::vec3(3.0,3.0,6.0);
+     rep.entidad.vel=glm::vec3(0.0,0.0,9.0);
      generarMapa();
      mapa.detectarBordes();
      camara.desplazar(glm::vec3(0,-20,0));
@@ -45,7 +47,11 @@ void Juego::teclaMovimiento(float x,float y,float z){
 void Juego::generarMapa()
 {
      thread hilos[4];
-     cout<<"sizeof(Voxel)="<<sizeof(Voxel)<<"; Tamano Mapa="<<30*30*4*32*32*32*sizeof(Voxel)/1000/1000<<endl;
+
+     DEBUG(/*{{{*/
+           cout<<"sizeof(Voxel)="<<sizeof(Voxel)<<"; Tamano Mapa="<<30*30*4*32*32*32*sizeof(Voxel)/1000/1000<<endl;
+     )/*}}}*/
+
      unique_ptr<mutex>  mt{new mutex()};
      queue<Bloque> bloques;
      int total=0;
@@ -69,7 +75,9 @@ void Juego::generarMapa()
             actual=total-bloques.size();
           mt->unlock();
 
-         // cout<<"Generados "<<actual<<" de "<<total<<endl;
+          DEBUG(/*{{{*/
+                  cout<<"Generados "<<actual<<" de "<<total<<endl;
+          )/*}}}*/
      }while(!vacia);
 
 
@@ -80,17 +88,10 @@ void Juego::generarMapa()
 void Juego::loop()
 {
    t.actualizar();
-   Colisionador col;
-   bool detener{false};
    shaders[0]->matProy=camara.getMatProy();
    shaders[0]->matVista=camara.getMatVista();
-   if(!detener&&col.revColision(rep.entidad,mapa).colisiona){
-       detener =true;
-   }
-   if(!detener){ 
-       rep.entidad.rotar(glm::vec3(0,0,20.0*t.delta()));
-       fisica.aplicar(rep.entidad,t.delta());
-   }
+   rep.entidad.rotar(glm::vec3(0,0,20.0*t.delta()));
+   fisica.aplicar(rep.entidad,mapa,t.delta());
    rep.mesh.get()->dibujar(shaders[0].get(),rep.entidad.getMatModelo());
    for(unique_ptr<MeshBloque>& mesh:repMapa->meshes){
      mesh->dibujar(shaders[0].get(),glm::mat4(1.0));
