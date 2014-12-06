@@ -1,0 +1,56 @@
+#include <iostream>
+
+
+#include "openglnat.h"
+#include <GLFW/glfw3.h>
+#include "Juego.h"
+#include <fstream>
+using namespace std;
+
+
+
+
+int main ()
+{
+
+    if( !glfwInit() )
+    {
+        cerr <<"Failed to initialize GLFW"<<endl;
+        return -1;
+    }
+    //glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // We want OpenGL 3.3
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+   // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
+
+       /* frame buffer clears should be to black */
+       glClearColor(0.0, 0.0, 0.0, 0.0);
+
+    // Open a window and create its OpenGL context
+    GLFWwindow* window; // (In the accompanying source code, this variable is global)
+    window = glfwCreateWindow( 1024, 768, "Probando 01", NULL, NULL);
+    if( window == NULL ){
+        cout<<"fallo la creacion de la ventana"<<endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+    glewExperimental=true;
+    if (glewInit() != GLEW_OK) {
+        cout<<"Fallo la inicializacion de glew"<<endl;
+        return -1;
+    }
+
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    Juego juego;
+
+    do{
+        cout<<"Dibujando"<<endl;
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        juego.loop();
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    } while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
+    glfwWindowShouldClose(window) == 0 );
+    }

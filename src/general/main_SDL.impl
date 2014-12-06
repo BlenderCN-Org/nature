@@ -1,0 +1,250 @@
+/* A simple program to show how to set up an X window for OpenGL rendering.
+ * X86 compilation: gcc -o -L/usr/X11/lib   main main.c -lGL -lX11
+ * X64 compilation: gcc -o -L/usr/X11/lib64 main main.c -lGL -lX11
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include "SDL2/SDL.h"
+//#include "SDL/SDL_main.h"
+
+#include "openglnat.h"
+#include "SDL2/SDL_opengl.h"
+#ifdef EMSCRIPTEN
+#include "emscripten.h"
+#endif // EMSCRIPTEN
+#include "render/Mesh.h"
+#include "Juego.h"
+#
+#
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
+
+
+Juego* juego;
+ControlCamara* controlCamara;
+SDL_Window* gWindow = NULL;
+SDL_GLContext gContext;
+
+
+static void quit( int code )
+{
+    /*
+     * Quit SDL so we can release the fullscreen
+     * mode and restore the previous video settings,
+     * etc.
+     */
+     delete juego;
+    SDL_Quit();
+
+    /* Exit program. */
+    exit( code );
+}
+
+float camRotX=0;
+float camRotY=0;
+float camRotZ=0;
+
+float camMovX=0;
+float camMovY=0;
+float camMovZ=0;
+
+static void manejarTecla( SDL_Keysym* keysym ,bool presionada)
+{
+
+    switch( keysym->sym ) {
+    case SDLK_ESCAPE:
+        quit( 0 );
+        break;
+     case SDLK_w:
+          camMovY=presionada?1:0;
+          break;
+     case SDLK_s:
+          camMovY=presionada?-1:0;;
+          break;
+     case SDLK_a:
+          camMovX=presionada?-1:0;
+          break;
+     case SDLK_d:
+          camMovX=presionada?1:0;
+          break;
+     case SDLK_q:
+          camMovZ=presionada?-1:0;
+          break;
+     case SDLK_e:
+          camMovZ=presionada?1:0;
+          break;
+     case SDLK_LEFT:
+          camRotZ=presionada?-1:0;
+          break;
+     case SDLK_RIGHT:
+          camRotZ=presionada?1:0;
+          break;
+     case SDLK_UP:
+          camRotX=presionada?1:0;
+          break;
+     case SDLK_DOWN:
+          camRotX=presionada?-1:0;
+          break;
+     case SDLK_SPACE:
+          break;
+    default:
+        break;
+    }
+
+}
+
+static void procesar_eventos( void )
+{
+    /* Our SDL event placeholder. */
+    SDL_Event event;
+
+    /* Grab all the events off the queue. */
+    while( SDL_PollEvent( &event ) ) {
+
+        switch( event.type ) {
+        case SDL_KEYDOWN:
+            /* Handle key presses. */
+            manejarTecla(&event.key.keysym,true);
+            break;
+        case SDL_KEYUP:
+            /* Handle key presses. */
+            manejarTecla(&event.key.keysym,false);
+            break;
+        case SDL_QUIT:
+            /* Handle quit requests (like Ctrl-c). */
+            quit( 0 );
+            break;
+        }
+
+    }
+
+}
+
+static void setup_opengl( int width, int height )
+{
+
+
+      /*** (8) configure the OpenGL context for rendering ***/
+
+       glEnable(GL_DEPTH_TEST); /* enable depth buffering */
+       glDepthFunc(GL_LESS);    /* pedantic, GL_LESS is the default */
+       glClearDepth(1.0);       /* pedantic, 1.0 is the default */
+
+       /* frame buffer clears should be to black */
+       glClearColor(0.0, 0.0, 0.0, 0.0);
+
+       /* set up projection transform */
+      // glMatrixMode(GL_PROJECTION);
+       //glLoadIdentity();
+
+       /* establish initial viewport */
+       /* pedantic, full window size is default viewport */
+       glViewport(0, 0, width, height);
+}
+
+bool init()
+{
+	//Initialization flag
+	bool success = true;
+
+	//Initialize SDL
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	{
+		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+		success = false;
+	}
+	else
+	{
+		//Use OpenGL 3.1 core
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+
+		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+		if( gWindow == NULL )
+		{
+			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
+			success = false;
+		}
+		else
+		{
+			//Create context
+			gContext = SDL_GL_CreateContext( gWindow );
+			if( gContext == NULL )
+			{
+				printf( "OpenGL context could not be created! SDL Error: %s\n", SDL_GetError() );
+				success = false;
+			}
+			else
+			{
+				//Initialize GLEW
+				glewExperimental = GL_TRUE; 
+				GLenum glewError = glewInit();
+				if( glewError != GLEW_OK )
+				{
+					printf( "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
+				}
+
+				//Use Vsync
+				if( SDL_GL_SetSwapInterval( 1 ) < 0 )
+				{
+					printf( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError() );
+				}
+                setup_opengl(SCREEN_WIDTH,SCREEN_HEIGHT);
+			}
+		}
+	}
+
+	return success;
+}
+
+
+
+
+void game_loop(){
+
+         //std::cout<<"dibujar"<<std::endl;
+       //  std::cout<<"procesar eventos"<<std::endl;
+         procesar_eventos();
+         controlCamara->teclaMovimiento(camMovX*10,camMovY*10,camMovZ*10);
+         controlCamara->ejes(camRotX*10,camRotZ*10);
+         //std::cout<<"camara procesada"<<std::endl;
+         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+         //std::cout<<"loop"<<std::endl;
+         juego->loop();
+		 SDL_GL_SwapWindow( gWindow );
+
+}
+int main(int argc, char* argv[])
+{
+    if( !init() )
+	{
+		printf( "Failed to initialize!\n" );
+	}
+	else
+	{
+
+#ifndef EMSCRIPTEN22
+        GLenum err = glewInit();
+        if (GLEW_OK != err)
+        {
+          /* Problem: glewInit failed, something is seriously wrong. */
+          fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+        }
+        fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+#endif
+        juego=new Juego();
+        controlCamara=juego;
+      /*** (9) dispatch X events ***/
+
+         #ifdef EMSCRIPTEN
+           emscripten_set_main_loop(game_loop, 30,0);
+         #else
+        while(1){
+           game_loop();
+         }
+         #endif // EMSCRIPTEN
+      return 0;
+    }
+}
