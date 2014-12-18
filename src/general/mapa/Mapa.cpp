@@ -60,7 +60,6 @@ Voxel& Mapa::getVoxel(int x,int y,int z){
 }
 Cubo Mapa::getCuboVoxel(int x,int y,int z){
     Cubo c{glm::vec3(x-tamCubo/2,y-tamCubo/2,z-tamCubo/2),glm::vec3(tamCubo,tamCubo,tamCubo)};
-
     return c;
 }
 

@@ -7,6 +7,7 @@
 #include "Shader.h"
 
 enum class UsosVBO{vertices=0,normales,total};
+
 class Mesh
 {
     public:
@@ -16,11 +17,12 @@ class Mesh
         Mesh(Mesh&&)=default;
         Mesh& operator=(Mesh&&) = default;
         virtual ~Mesh();
-        void dibujar(Shader* shader,const glm::mat4 &modelMatrix);
+        void dibujar(Shader* shader,const glm::mat4 &modelMatrix,bool cullBack=true);
+        void dibujar(Shader* shader,const glm::mat4 &modelMatrix,std::vector<glm::mat4> pose,std::vector<glm::mat4> bindPoses,bool cullBack=true);
         void bindAtributtes();
     private:
         GLuint vao;
-        GLuint vbo[4];
+        GLuint vbo[6];
         int nvert;
         int ncaras;
         bool usarVAO=true;

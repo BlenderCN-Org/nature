@@ -3,15 +3,22 @@
 #include "entidades/Entidad.h"
 #include "includeglm.h"
 
-class Camara: public Entidad
+class Camara
 {
      public:
           Camara(float av,float proporcion,float cercano,float lejano);//av=fov
           virtual ~Camara();
-          glm::mat4 getMatVista(){return glm::inverse(getMatModelo());};
+          glm::mat4 getMatVista(){return glm::inverse(getMat());};
           glm::mat4 getMatProy(){return mProy;};
+          glm::vec3 getOrientacion();
+          glm::mat4 getMat();
+          void rotar(glm::vec3 v);
+          void desplazar(glm::vec3 v);
+          glm::vec3 rot{0,0,0};
+          glm::vec3 pos{0,0,0};
      private:
           glm::mat4 mProy;
+          
 };
 
 #endif // CAMARA_H

@@ -17,6 +17,11 @@ std::string GestorRutas::getRutaDatos(){
     //return getRutaDatos()+"/modelos/"+nombreMesh+"/"+nombreMesh+".mesh";
     return getRutaDatos()+"/"+nombreMesh+".mesh";
 }
+std::string GestorRutas::getRuta(const std::string& recurso){
+    //return getRutaDatos()+"/modelos/"+nombreMesh+"/"+nombreMesh+".mesh";
+    return getRutaDatos()+"/"+recurso;
+}
+
 std::string GestorRutas::getRutaShader(const std::string& nombreShader){
     //return getRutaDatos()+"/modelos/"+nombreMesh+"/"+nombreMesh+".mesh";
     return getRutaDatos()+"/shaders/"+nombreShader;

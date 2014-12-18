@@ -8,5 +8,5 @@
 #include "glm/gtc/matrix_access.hpp"
 #include "glm/common.hpp"
 //#include "glm/gtx/quaternion.hpp"
-#include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/quaternion.hpp"
 #endif // INCLUDEGLM_H_INCLUDED

@@ -3,8 +3,10 @@
 #include "includeglm.h"
 class Hueso{
     public:
+       int padre;
        glm::vec3 cabeza;
        glm::vec3 cola;
-}
+       glm::mat4 mat;
+};
 
 #endif

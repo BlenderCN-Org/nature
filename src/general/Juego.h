@@ -12,11 +12,16 @@
 #include "render/Camara.h"
 #include "util/Tiempo.h"
 #include "fisica/Fisica.h"
+#include "esqueleto/Esqueleto.h"
+#include "render/MeshEsqueleto.h"
+
 class Juego:public ControlCamara
 {
      public:
+          float dtf=0.02f; //Tiempo fijo para el calculo de las fisicas
+          float tacumf=0.0f; //Tiempo fijo para el calculo de las fisicas
           std::vector<std::unique_ptr<Shader>> shaders;
-          std::vector<RepresentacionEntidad>  rep{2};
+          std::vector<RepresentacionEntidad>  rep{4};
           Juego();
           virtual ~Juego();
           void loop();
@@ -28,7 +33,12 @@ class Juego:public ControlCamara
           Fisica fisica;
           Camara camara;
           Tiempo t;
+          float tanim=0.0f;
           std::unique_ptr<RepresentacionMapa> repMapa;
+          std::unique_ptr<Esqueleto> esq;
+          std::unique_ptr<MeshEsqueleto> esqMesh;
+          std::unique_ptr<Mesh> cubo;
+           
 };
 
 #endif // JUEGO_H

@@ -9,6 +9,7 @@ class GestorRutas
         virtual ~GestorRutas();
         static std::string getRutaDatos();
         static std::string getRutaMesh(const  std::string& nombreMesh);
+        static std::string getRuta(const  std::string& recurso);
         static std::string getRutaShader(const  std::string& nombreMesh);
     protected:
     private:

@@ -4,8 +4,11 @@ using namespace std;
 Colision Colisionador::revColision(Entidad e,Mapa m){
     Colision c;
     c.colisiona=false;
-    if(m.getVoxel((int)roundf(e.pos.x),(int)roundf(e.pos.y),(int)roundf(e.pos.z)).solido){
-        Cubo cv= m.getCuboVoxel((int)roundf(e.pos.x),(int)roundf(e.pos.y),(int)roundf(e.pos.z));
+    int x=(int)roundf(e.pos.x);
+    int y=(int)roundf(e.pos.y);
+    int z=(int)roundf(e.pos.z);
+    if(m.enRango(x,y,z)&&m.getVoxel(x,y,z).solido){
+        Cubo cv= m.getCuboVoxel(x,y,z);
         Cubo ce= e.getCubo();
             if(abs(cv.p.x - ce.p.x) < cv.t.x + ce.t.x)
             {
