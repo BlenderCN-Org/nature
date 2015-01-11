@@ -7,6 +7,7 @@ attribute  float in_idHueso;
 attribute  float in_peso;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
+uniform mat4 viewMatrixInv;
 uniform mat4 modelMatrix;
 uniform mat4 normalMatrix;
 uniform vec3 vecVista;
@@ -34,6 +35,6 @@ void main(void) {
     gl_Position = projectionMatrix*viewMatrix*pos;
     vertex_normal=normalize(mat3(normalMatrix)*in_Normal);
     luz=normalize(vec3(0.4,-0.4,1.0));
-    ex_vecVista=vec3(viewMatrix*vec4(0.0,0.0,0.0,1.0)-pos);
+    ex_vecVista=vec3(viewMatrixInv*vec4(0.0,0.0,0.0,1.0)-pos);
     ex_Color = in_Color;
 }

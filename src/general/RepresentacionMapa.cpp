@@ -11,6 +11,7 @@ RepresentacionMapa::RepresentacionMapa(Mapa& m)
              meshes.push_back(unique_ptr<MeshBloque>{new MeshBloque(mapa,b)});
          }
      }
+     cout<<"Meshes: "<<meshes.size()<<" Bloques"<<mapa.bloques.size()<<endl;
 }
 
 RepresentacionMapa::~RepresentacionMapa()

@@ -11,94 +11,94 @@
 #include "config.h"
 
 using namespace std;
-void imprimirMatriz(glm::mat4 mat){
+using namespace glm;
+void imprimirMatriz(mat4 mat){
     for(int y=0;y<4;y++){
         cout<<"(";
         for(int x=0;x<4;x++){
-            cout<<(x>0?",":"")<<mat[y][x];
+            cout<<(x>0?",":"")<<mat[x][y];
         }
         cout<<")"<<endl;
     }
 }
 Juego::Juego():
-mapa{1,1,1},
-camara(45.0f, 640.0f / 480.0f, 1.0f, 100.f)
+mapa{5,3,3},
+camara(45.0f, 640.0f / 480.0f, 1.0f, 600.f),
+shadowMap(2048,2048) 
 {
 
      cout<<"Creando juego"<<endl;
      cout<<"Cargando shader "<<endl;
-
+     luz=vec3(0.1,-1,0.6);
      Shader* s=new Shader(GestorRutas::getRutaShader("basico.vert"),GestorRutas::getRutaShader("basico.frag"));
      shaders.push_back( unique_ptr<Shader>(s));
 
-     s=new Shader(GestorRutas::getRutaShader("animado.vert"),GestorRutas::getRutaShader("basico.frag"),map<string,string>{{"%nhuesos%","6"}});
+     s=new Shader(GestorRutas::getRutaShader("basico.vert"),GestorRutas::getRutaShader("textura.frag"));
+     s->usarTex=true;
+     Imagen img(GestorRutas::getRuta("islablender.png"));
+     s->tex= new Textura(img);
      shaders.push_back( unique_ptr<Shader>(s));
 
-     s=new Shader(GestorRutas::getRutaShader("animado.vert"),GestorRutas::getRutaShader("basico.frag"),map<string,string>{{"%nhuesos%","6"}});
-     shaders.push_back( unique_ptr<Shader>(s));
-
-     //s=new Shader(GestorRutas::getRutaShader("esqueleto.vert"),GestorRutas::getRutaShader("basico.frag"));
-     //shaders.push_back( unique_ptr<Shader>(s));
-
+     cout<<"Borde "<<endl;
      s=new Shader(GestorRutas::getRutaShader("borde.vert"),GestorRutas::getRutaShader("basico.frag"));
      shaders.push_back( unique_ptr<Shader>(s));
 
+     cout<<"Animado 1"<<endl;
+     s=new Shader(GestorRutas::getRutaShader("animado.vert"),GestorRutas::getRutaShader("basico.frag"),map<string,string>{{"%nhuesos%","6"}});
+     shaders.push_back( unique_ptr<Shader>(s));
 
+     cout<<"Animado Borde 1"<<endl;
      s=new Shader(GestorRutas::getRutaShader("bordeanimado.vert"),GestorRutas::getRutaShader("basico.frag"),map<string,string>{{"%nhuesos%","6"}});
      shaders.push_back( unique_ptr<Shader>(s));
 
-     s=new Shader(GestorRutas::getRutaShader("bordeanimado.vert"),GestorRutas::getRutaShader("basico.frag"),map<string,string>{{"%nhuesos%","6"}});
+     cout<<"Sombra"<<endl;
+     s=new Shader(GestorRutas::getRutaShader("sombra.vert"),GestorRutas::getRutaShader("sombra.frag"));
      shaders.push_back( unique_ptr<Shader>(s));
-     cout<<"Cargando mesh capibara "<<endl;
-     //rep.push_back(move(RepresentacionEntidad()));
-     cout<<"**rep"<<rep.size()<<endl;
-//     esq=unique_ptr<Esqueleto>(new Esqueleto("esqueleto.mesh.esq"));
 
+     cout<<"Sombra Animado"<<endl;
+     s=new Shader(GestorRutas::getRutaShader("sombraanimado.vert"),GestorRutas::getRutaShader("sombra.frag"),map<string,string>{{"%nhuesos%","6"}});
+     shaders.push_back( unique_ptr<Shader>(s));
 
-//     cout<<"nhuesos"<<esq->huesos.size()<<endl;
-     cubo=unique_ptr<Mesh>(new Mesh("cubo"));
-     rep[0].mesh= unique_ptr<Mesh>(new Mesh("capibara"));
-     rep[0].entidad.nombre="mono";
-     rep[0].entidad.pos=glm::vec3(3.0f,3.0f,6.0f);
-     rep[0].entidad.vel=glm::vec3(0.0f,0.0f,9.0f);
-     rep[0].shader=shaders[0].get();
-     rep[0].entidad.rebote=0.2f;
-     //rep.push_back(std::move(RepresentacionEntidad()));
-     rep[1].mesh= unique_ptr<Mesh>(new Mesh("cubico"));
-     rep[1].esq= unique_ptr<Esqueleto>(new Esqueleto("cubico.mesh.esq"));
-     rep[1].entidad.pos=glm::vec3(3.0f,12.0f,6.0f);
-     rep[1].entidad.rotar(glm::vec3(0,0,90));
-     rep[1].entidad.rebote=0.0f;
-     rep[1].entidad.vel=glm::vec3(0.0f,0.0f,09.0f);
-     rep[1].shader=shaders[1].get();
-     rep[1].shaderBorde=shaders[4].get();
+     RepresentacionEntidad repCubico;
+     repCubico.mesh=unique_ptr<Mesh>(new Mesh(MeshDatos("cubico")));
+     repCubico.ent=unique_ptr<Entidad>(new Personaje());
+     repCubico.esq=unique_ptr<Esqueleto>(new Esqueleto("cubico.mesh.esq"));
+     repCubico.ani=unique_ptr<Animador>(new Animador(*repCubico.esq));
+     repCubico.ani->animar("correr",true);
+     repCubico.ent->gravedad=2.0f;
+     repCubico.ent->pos=vec3(20,20,20);
+     repCubico.ent->rebote=0.0f;
+     repCubico.ent->vel=vec3(0.0f,0.0f,09.0f);
+     repCubico.ent->ace=vec3(0.0f,0.0f,0.0f);
+     repCubico.shader=shaders[3].get();
+     repCubico.shaderBorde=shaders[4].get();
+     repCubico.shaderSombra=shaders[6].get();
 
-     rep[2].mesh= unique_ptr<Mesh>(new Mesh("hoja"));
-     rep[2].esq= unique_ptr<Esqueleto>(new Esqueleto("hoja.mesh.esq"));
-     rep[2].entidad.pos=glm::vec3(2.0f,6.0f,6.0f);
-     rep[2].entidad.rotar(glm::vec3(0,0,90));
-     rep[2].entidad.vel=glm::vec3(0.0f,0.0f,09.0f);
-     rep[2].shader=shaders[2].get();
-     rep[2].shaderBorde=shaders[5].get();
+     RepresentacionEntidad repEjes;
+     repEjes.mesh=unique_ptr<Mesh>(new Mesh(MeshDatos("capibara")));
+     //repEjes.mesh=unique_ptr<Mesh>(new Mesh(MeshDatos::plano(10,10)));
+     repEjes.ent=unique_ptr<Entidad>(new Entidad());
+     repEjes.ent->gravedad=1.0f;
+     repEjes.ent->rebote=0.0f;
+     repEjes.ent->pos=vec3(20,20,40);
+     repEjes.ent->vel=vec3(0.0f,0.0f,09.0f);
+     repEjes.ent->ace=vec3(0.0f,0.0f,0.0f);
+     repEjes.shader=shaders[0].get();
+     repEjes.shaderBorde=shaders[2].get();
+     repEjes.shaderSombra=shaders[5].get();
+     
+     ctrCam=unique_ptr<ControlCamara>(new CamSegPaj(vec3(32,0,-90),repCubico.ent.get(),&camara));
+     rep.push_back(move(repCubico));
+     rep.push_back(move(repEjes));
 
-     rep[3].mesh= unique_ptr<Mesh>(new Mesh("isla"));
-     rep[3].entidad.nombre="Mapa";
-     rep[3].entidad.pos=glm::vec3(0.0f,0.0f,0.0f);
-     rep[3].entidad.rotar(glm::vec3(0,0,0));
-     rep[3].entidad.vel=glm::vec3(0.0f,0.0f,0.0f);
-     rep[3].entidad.gravedad=0.0f;
-     rep[3].shader=shaders[1].get();
-     rep[3].shaderBorde=shaders[3].get();
-
-
-     esqMesh=unique_ptr<MeshEsqueleto>(new MeshEsqueleto(*rep[1].esq));
      generarMapa();
-     mapa.detectarBordes();
-     camara.desplazar(glm::vec3(0,-20,0));
-     camara.rotar(glm::vec3(89.5,0,0));
-     glm::vec3 oc=camara.getOrientacion();
-     cout<<"Orientacion ("<<oc.x<<","<<oc.y<<","<<oc.z<<")"<<endl;
-     repMapa.reset(new RepresentacionMapa(mapa));
+
+     camara.desplazar(vec3(10,-20,40));
+     camara.rotar(vec3(89.5,0,0));
+     vec3 oc=camara.getOrientacion();
+     cout<<"Or.ent->cion ("<<oc.x<<","<<oc.y<<","<<oc.z<<")"<<endl;
+
+     cout<<"Memoria:"<<mapa.getTamX()*mapa.getTamY()*mapa.getTamZ()*sizeof(Voxel)/1024<<"KB"<<endl;
 
 }
 
@@ -109,11 +109,34 @@ Juego::~Juego()
 }
 
 void Juego::ejes(float x,float z){
-   camara.rotar(glm::vec3(x*0.1*t.delta(),0,z*0.1*t.delta()));
+    ctrCam->ejes(x,z);
 };
-void Juego::teclaMovimiento(float x,float y,float z){
-     camara.desplazar(glm::vec3(x*t.delta(),y*t.delta(),z*t.delta()));
+void Juego::movimiento(float x,float y,float z){
+     //camara.desplazar(vec3(x*t.delta(),y*t.delta(),z*t.delta()));
+     vec3 v=vec3(x,y,0);
+
+
+     Personaje* p=(Personaje*) rep[0].ent.get();
+     p->ejesMover(x,y);
+     /*if(x==0&&y==0){
+       if(rep[0].ani->id("parado")!=rep[0].ani->actual())
+          rep[0].ani->animar("parado",true);
+     }else{
+       if(rep[0].ani->id("correr")!=rep[0].ani->actual())
+          rep[0].ani->animar("correr",true);
+     }*/
 };
+void Juego::presionaSalto(){
+     Personaje* p=(Personaje*) rep[0].ent.get();
+     p->iniciarSalto();
+}; 
+
+void Juego::sueltaSalto(){
+     Personaje* p=(Personaje*) rep[0].ent.get();
+     p->detenerSalto();
+}; 
+void Juego::ejeMovimiento(float x,float y){
+}; 
 
 
 void Juego::generarMapa()
@@ -123,7 +146,6 @@ void Juego::generarMapa()
      DEBUG(/*{{{*/
            cout<<"sizeof(Voxel)="<<sizeof(Voxel)<<"; Tamano Mapa="<<30*30*4*32*32*32*sizeof(Voxel)/1000/1000<<endl;
      )/*}}}*/
-
  //    unique_ptr<mutex>  mt{new mutex()};
      queue<Bloque> bloques;
      int total=0;
@@ -134,12 +156,16 @@ void Juego::generarMapa()
           bloques.push(b);
      }
      total=bloques.size();
-     Generador::generar(&mapa,&bloques);
-
+//Generador::generar(&mapa,&bloques);
+     MeshDatos md("mapah");
+     Generador::generarVoxelizar(&mapa,md,1.0);
+     mapa.detectarBordes();
+     repMapa.reset(new RepresentacionMapa(mapa));
+     repMapa->meshUnica=unique_ptr<Mesh>(new Mesh(md));
 
      /*for(int i=0;i<4;++i){
 
-          hilos[i]=std::thread(&Generador::generar,&mapa,&bloques,mt.get());
+          hilos[i]=thread(&Generador::generar,&mapa,&bloques,mt.get());
      }
      bool vacia=false;
      do{
@@ -162,39 +188,99 @@ void Juego::generarMapa()
 void Juego::loop()
 {
    t.actualizar();
-   if(tanim>2.0f)tanim=0.0f;
+   tacumf+=t.delta();
+   while(tacumf>0.02f){
+       for (RepresentacionEntidad &r:rep){
+           fisica.aplicar(*r.ent,mapa,0.02f);
+           r.ent->act(0.02f);
+           if(r.ent->pos.z<0){
+                r.ent->pos=vec3(20,20,40);
+           }
+       }
+       tacumf-=0.02f;
+   }
+
+   ctrCam->act(t.delta());
    for(auto &s:shaders){
      s->matProy=camara.getMatProy();
      s->matVista=camara.getMatVista();
+     //vec3 cp=camara.pos;
+     //vec3 centro=vec3(32*5/2,32*3/2,32*3/2);
+     luz=vec3(rotate(mat4(1.0f),radians(-0.11f*t.delta()),vec3(1,0,0))*vec4(luz,0));
+     if(luz.z<0) luz=vec3(-0.2,-1,0);
+     s->luz=luz;
+   //  cout<<"***"<<endl;
+ //    imprimirMatriz(s->matVista);
+//     s->matVista=rotate(mat4(1.0f),radians(-180.0f),vec3(1,0,0));
      s->vecVista=camara.getOrientacion();
    }
-   
-   tacumf+=t.delta();
-   int i=0;
-//   cout<<"dtfs:"<<dtf<<endl;
-  // cout<<"camara pos;rot: ("<<camara.pos.x<<","<<camara.pos.y<<","<<camara.pos.z<<");";
-//   cout<<"("<<camara.rot.x<<","<<camara.rot.y<<","<<camara.rot.z<<");";
-   while(tacumf>0.02f){
-       for (RepresentacionEntidad &r:rep){
-           fisica.aplicar(r.entidad,mapa,0.02f);
-       }
-       tacumf-=0.02f;
-       ++i;
-   }
-//       cout<<"dtfs:"<<i<<endl;
-
+//   cout<<"Renderizar ShadowMap"<<endl;
+   shadowMap.bind(); 
+   vec3 centro=vec3(mapa.getTamX()/2,mapa.getTamY()/2,mapa.getTamZ()/2);
+   mat4 matLuz;
+   glm::mat4 biasMatrix(
+0.5, 0.0, 0.0, 0.0,
+0.0, 0.5, 0.0, 0.0,
+0.0, 0.0, 0.5, 0.0,
+0.5, 0.5, 0.5, 1.0
+);
+   mat4 matPSha=glm::ortho<float>(-mapa.getTamX()/2,mapa.getTamX()/2,-mapa.getTamY()/2,mapa.getTamY()/2,-mapa.getTamZ()/2,mapa.getTamZ()/2);
+   mat4 matVSha=glm::lookAt(centro+luz, centro, glm::vec3(0,1,0));
+   matLuz=biasMatrix*matPSha*matVSha;
+   glViewport(0,0,2048,2048);
    for (RepresentacionEntidad &r:rep){
+       r.shaderSombra->shadowMap=nullptr;
+       r.shaderSombra->matProy=matPSha;
+       r.shaderSombra->matVista=matVSha;
        if(r.esq){
-          r.mesh->dibujar(r.shader,r.entidad.getMatModelo(),r.esq->getPose("aa",tanim),r.esq->bindPoses);
-          r.mesh->dibujar(r.shaderBorde,r.entidad.getMatModelo(),r.esq->getPose("aa",tanim),r.esq->bindPoses,false);
+         r.mesh->dibujar(r.shaderSombra,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses,true);
        }else{
-           r.mesh->dibujar(r.shader,r.entidad.getMatModelo());
-           r.mesh->dibujar(shaders[3].get(),r.entidad.getMatModelo(),false);
-
+         r.mesh->dibujar(r.shaderSombra,r.ent->getMatModelo(),true);
        }
    }
-   tanim+=t.delta()*1.0;
-   //for(unique_ptr<MeshBloque>& mesh:repMapa->meshes){
-   //  mesh->dibujar(shaders[0].get(),glm::mat4(1.0f));
-   //}
+   if(repMapa->meshUnica){
+       repMapa->meshUnica->dibujar(shaders[5].get(),mat4(1.0f));
+   }else for(unique_ptr<MeshBloque>& mesh:repMapa->meshes){
+       mesh->dibujar(shaders[5].get(),mat4(1.0f));
+   }
+   shadowMap.unbind();
+   glViewport(0,0,1024,680);   
+//   shaders[1]->tex=&shadowMap.tcolor;
+
+//   cout<<"Renderizar Escena"<<endl;
+   for (RepresentacionEntidad &r:rep){
+           r.shader->matLuz=matLuz;
+           r.shader->shadowMap=&shadowMap.tdepth;
+      if(r.esq){
+           Personaje* p= (Personaje*) r.ent.get();
+           switch(p->estado){
+               case Personaje::Estado::Caminando:
+                   r.ani->animar("caminar",true);
+               break;
+               case Personaje::Estado::Saltando:
+                   r.ani->animar("saltar",true);
+               break;
+               case Personaje::Estado::Cayendo:
+                   r.ani->animar("caer",true);
+               break;
+               case Personaje::Estado::Corriendo:
+                   r.ani->animar("correr",true);
+               break;
+               case Personaje::Estado::Parado:
+                   r.ani->animar("parado",true);
+               break;
+           }
+           r.ani->act(t.delta());
+           r.mesh->dibujar(r.shader,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses);
+    //       r.mesh->dibujar(r.shaderBorde,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses,false);
+       }else{
+           r.mesh->dibujar(r.shader,r.ent->getMatModelo());
+  //         r.mesh->dibujar(r.shaderBorde,r.ent->getMatModelo(),false);
+       }
+   }
+   if(repMapa->meshUnica){
+       repMapa->meshUnica->dibujar(shaders[0].get(),mat4(1.0f));
+   }else for(unique_ptr<MeshBloque>& mesh:repMapa->meshes){
+       mesh->dibujar(shaders[0].get(),mat4(1.0f));
+   }
 }

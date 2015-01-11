@@ -82,26 +82,4 @@ Esqueleto::Esqueleto(const string ruta){
 Esqueleto::~Esqueleto(){
 }
 
-std::vector<glm::mat4> Esqueleto::getPose(string animacion,float t){
-    vector<glm::mat4> poses(huesos.size());
-    int ic=0;
-    int aniId=0;
-    while(true){
-        if(ic>=anims[aniId].cuadros.size()-1||anims[aniId].cuadros[ic+1].tiempo>t){
-           break; 
-        }else{
-            ic++;
-        }
-    }
-    //cout<<"Cuadro:"<<ic<<endl;
-    vector<bool> calculado(huesos.size());
-    for(int i=0;i<huesos.size();i++){
-        CuadroHueso &h=anims[aniId].cuadros[ic].huesos[i];
-        //if(i==2&&ic==0){
-          //  cout<<"Probado Matriz Recyrsiva"<<endl;
-            poses[i]=  h.getMat(huesos,anims[aniId].cuadros[ic].huesos,huesos[i],i); 
-       // }
-        //poses[i]=  h.getMat(); 
-    }
-    return move(poses);
-}
+

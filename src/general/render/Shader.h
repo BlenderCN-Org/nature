@@ -6,6 +6,7 @@
 #include "includeglm.h"
 #include <vector>
 #include <map>
+#include "Textura.h"
 
 class Shader {
 public:
@@ -26,7 +27,12 @@ public:
      unsigned int id();
      glm::mat4 matProy;
      glm::mat4 matVista;
+     glm::mat4 matLuz;
      glm::vec3 vecVista;
+     glm::vec3 luz;
+     bool usarTex=false;
+     Textura* tex;
+     Textura* shadowMap;
 
 private:
 	unsigned int shader_id;
@@ -36,10 +42,15 @@ private:
 
 	 int projectionMatrixLocation;
      int viewMatrixLocation;
+     int viewMatrixInvLocation;
      int modelMatrixLocation;
      int normalMatrixLocation;
      int poseMatrixLocation;
      int vecVistaLocation;
+     int textureLocation;
+     int luzLocation;
+     int luzMatrixLocation;
+     int shadowMapLocation;
 };
 
 #endif

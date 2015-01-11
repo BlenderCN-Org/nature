@@ -26,7 +26,6 @@ out vec3 luz;
 // Salida
 out vec3 ex_Color;
 out vec3 ex_vecVista;
-
 void main(void) {
     int idHueso=int(in_idHueso);
     vertex_normal=normalize(mat3(normalBone[idHueso])*in_Normal);

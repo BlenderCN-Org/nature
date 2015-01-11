@@ -10,15 +10,16 @@ class MeshBloque
           MeshBloque(Mapa& m, Bloque& b);
           MeshBloque(const MeshBloque&)=delete;
           MeshBloque& operator=(const MeshBloque&) = delete;
-          MeshBloque(MeshBloque&&)=default;
-          MeshBloque& operator=(MeshBloque&&) = default;
+          MeshBloque(MeshBloque&&);
+          MeshBloque& operator=(MeshBloque&&);
           virtual ~MeshBloque();
-          void dibujar(Shader* shader,const glm::mat4 &modelMatrix);
-        void bindAtributtes();
+          void dibujar(Shader* shader,const glm::mat4 &modelMatrix,bool cullback=true);
+          void vertex(Mapa& m,Bloque& b);
+          void bindAtributtes();
 
      private:
-         GLuint vao;
-         GLuint vbo[4];
+         GLuint vao=0;
+         std::vector<GLuint> vbo=std::vector<GLuint>(4,0);
          int nvert;
          int ncaras;
 

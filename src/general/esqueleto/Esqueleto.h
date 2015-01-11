@@ -13,7 +13,6 @@ class Esqueleto{
         std::vector<AnimEsqueleto> anims;
         Esqueleto(std::string ruta);
         virtual ~Esqueleto();
-        std::vector<glm::mat4> getPose(std::string animacion,float t);
 };
 
 #endif

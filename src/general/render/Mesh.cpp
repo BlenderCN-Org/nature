@@ -3,106 +3,85 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+
 using namespace std;
-Mesh::Mesh(string nombre)
-{   usarVAO=false;
 
-        ifstream f;
-       f.open(GestorRutas::getRutaMesh(nombre),  ios::in |  ios::binary);
-       if(!f.is_open()){
-           cout<<"error abriendo"<<GestorRutas::getRutaMesh(nombre)<< endl;
-       }else{
-            glm::vec3 vmin=glm::vec3(1000.0f,1000.0f,1000.0f);
-            f.read((char*)&nvert,sizeof(int));
-              cout<<sizeof(int)<<":vertices="<<nvert<< endl;
-            if(nvert>0){
-               //vert= unique_ptr<float>(new float[nvert*3]);
-               unique_ptr<float[]> vert{new float[nvert*3]};
-               unique_ptr<float[]> normal{new float[nvert*3]};
-               unique_ptr<float[]> colores{new float[nvert*3]};
-               unique_ptr<float[]> idhueso{new float[nvert]};
-               unique_ptr<float[]> peso{new float[nvert]};//peso del hueso
+Mesh::Mesh(Mesh&& viejo){
+   swap(vao,viejo.vao);
+   vbo.swap(viejo.vbo);
+   swap(nvert,viejo.nvert);
+   swap(ncaras,ncaras); 
+};
+Mesh& Mesh::operator=(Mesh&& viejo){
+   swap(vao,viejo.vao);
+   vbo.swap(viejo.vbo);
+   swap(nvert,viejo.nvert);
+   swap(ncaras,ncaras); 
+   return *this;
+};
 
-               //4=TAMANO_FLOAT
-               f.read((char*)vert.get(),sizeof(float)*nvert*3);
-               f.read((char*)normal.get(),sizeof(float)*nvert*3);
-               f.read((char*)colores.get(),sizeof(float)*nvert*3);
-               f.read((char*)idhueso.get(),sizeof(float)*nvert);
-               f.read((char*)peso.get(),sizeof(float)*nvert);
-
-               f.read((char*)&ncaras,sizeof(int));
-               for(int i=0;i<nvert;i++){
-                   vmin=glm::min(vmin,glm::vec3(normal.get()[3*i],normal.get()[3*i+1],normal.get()[3*i+2]));
-               }
-               if(ncaras>0){
-                       unique_ptr<GLuint> caras{new GLuint[ncaras*3]};
-                      f.read((char*)caras.get(),sizeof(GLuint)*ncaras*3);
-                      if(usarVAO){
-                       }
-                      //cout<<sizeof(int)<<":caras="<<nvert<< endl;
+Mesh::Mesh(MeshDatos d)
+{     
+      usarVAO=false;
+      nvert=d.vert.size();
+      cout<<"vertices*:"<<nvert<<endl;
+      ncaras=d.caras.size();
+      glEnableVertexAttribArray(0);
+      glGenBuffers(vbo.size(), &vbo[0]);
+      glBindBuffer(GL_ARRAY_BUFFER, vbo[0]); 
+      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float)*3, &d.vert[0], GL_STATIC_DRAW); 
+      glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0); 
 
 
-                      glEnableVertexAttribArray(0);
-                      glGenBuffers(6, &vbo[0]);
-                      glBindBuffer(GL_ARRAY_BUFFER, vbo[0]); 
-                      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float)*3, vert.get(), GL_STATIC_DRAW); 
+      //Colores
+      glEnableVertexAttribArray(1);
+      glBindBuffer(GL_ARRAY_BUFFER, vbo[1]); 
+      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float)*3, &d.color[0], GL_STATIC_DRAW); 
 
-                      glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0); 
-
-
+      glVertexAttribPointer((GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, 0); 
 
 
-                      //Colores
-                      glEnableVertexAttribArray(1);
-                      glBindBuffer(GL_ARRAY_BUFFER, vbo[1]); 
-                      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float)*3, colores.get(), GL_STATIC_DRAW); 
+      //Normales
+      glEnableVertexAttribArray(2);
+      glBindBuffer(GL_ARRAY_BUFFER, vbo[2]); 
+      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float)*3, &d.normal[0], GL_STATIC_DRAW); 
+      glVertexAttribPointer((GLuint)2, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-                      glVertexAttribPointer((GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, 0); 
+      //Id Huesos
+      glEnableVertexAttribArray(3);
+      glBindBuffer(GL_ARRAY_BUFFER, vbo[3]);
+      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float), &d.hueso[0], GL_STATIC_DRAW);
+      glVertexAttribPointer((GLuint)3, 1, GL_FLOAT, GL_FALSE, 0, 0);
+      //Peso
+      glEnableVertexAttribArray(4);
+      glBindBuffer(GL_ARRAY_BUFFER, vbo[4]);
+      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float), &d.peso[0], GL_STATIC_DRAW);
+      glVertexAttribPointer((GLuint)4, 1, GL_FLOAT, GL_FALSE, 0, 0);
+      //Uvs
+      glEnableVertexAttribArray(5);
+      glBindBuffer(GL_ARRAY_BUFFER, vbo[5]);
+      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float)*2, &d.uv[0], GL_STATIC_DRAW);
+      glVertexAttribPointer((GLuint)5, 2, GL_FLOAT, GL_FALSE, 0, 0);
+      
+    // Set up our vertex attributes pointer
+    //Caras
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[6]); 
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, ncaras*sizeof(int)*3, &d.caras[0], GL_STATIC_DRAW);
 
-
-                      //Normales
-                      glEnableVertexAttribArray(2);
-                      glBindBuffer(GL_ARRAY_BUFFER, vbo[2]); 
-                      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float)*3, normal.get(), GL_STATIC_DRAW); 
-                      glVertexAttribPointer((GLuint)2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-                      //Id Huesos
-                      glEnableVertexAttribArray(3);
-                      glBindBuffer(GL_ARRAY_BUFFER, vbo[3]);
-                      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float), idhueso.get(), GL_STATIC_DRAW);
-                      glVertexAttribPointer((GLuint)3, 1, GL_FLOAT, GL_FALSE, 0, 0);
-                      //Peso
-                      glEnableVertexAttribArray(4);
-                      glBindBuffer(GL_ARRAY_BUFFER, vbo[4]);
-                      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float), peso.get(), GL_STATIC_DRAW);
-                      glVertexAttribPointer((GLuint)4, 1, GL_FLOAT, GL_FALSE, 0, 0);
-
-                     // Set up our vertex attributes pointer
-
-
-          //Caras
-                      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[5]); 
-                      glBufferData(GL_ELEMENT_ARRAY_BUFFER, ncaras*sizeof(int)*3, caras.get(), GL_STATIC_DRAW);
-
-
-                      if(usarVAO){
-                        //glBindVertexArray(0);
-                      }
-                      GLenum error=glGetError();
-                      if(error==GL_NO_ERROR){
-                          cout<<"todo bien terminado"<< endl;
-                      }
-               }
+      if(usarVAO){
+        //glBindVertexArray(0);
+      }
+      GLenum error=glGetError();
+      if(error==GL_NO_ERROR){
+          cout<<"todo bien terminado"<< endl;
+      }
 
 
-            }
-       }
 }
 
 Mesh::~Mesh()
 {
-   glDeleteBuffers(6, vbo);
-   //glDeleteVertexArrays(1, &vao);
+   glDeleteBuffers(vbo.size(), &vbo[0]);
 }
 void Mesh::bindAtributtes(){
        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]); // Bind our Vertex Buffer Object
@@ -130,10 +109,15 @@ void Mesh::bindAtributtes(){
        glBindBuffer(GL_ARRAY_BUFFER, vbo[4]); // Bind our Vertex Buffer Object
        glVertexAttribPointer((GLuint)4, 1, GL_FLOAT, GL_FALSE, 0, 0);
 
+       //UV
+       glEnableVertexAttribArray(5);
+       glBindBuffer(GL_ARRAY_BUFFER, vbo[5]); // Bind our Vertex Buffer Object
+       glVertexAttribPointer((GLuint)5, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
 
       // Set up our vertex attributes pointer
      //Caras
-       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[5]); // Bind our Vertex Buffer Object
+       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[6]); // Bind our Vertex Buffer Object
 
 }
 void revisarError(string modulo){

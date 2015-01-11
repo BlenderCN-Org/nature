@@ -1,11 +1,3 @@
 #include "RepresentacionEntidad.h"
-
-RepresentacionEntidad::RepresentacionEntidad()
-{
-     //ctor
-}
-
-RepresentacionEntidad::~RepresentacionEntidad()
-{
-     //dtor
-}
+using namespace std;
+RepresentacionEntidad::RepresentacionEntidad(){};

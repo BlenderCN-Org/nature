@@ -28,7 +28,7 @@ static void validateShader(GLuint shader, const char* file = 0) {
 
 	glGetShaderInfoLog(shader, BUFFER_SIZE, &length, buffer);
 	if (length > 0) {
-		cout << "Shader " << shader << " (" << (file?file:"") << ") compile error: " << buffer << endl;
+		cerr << "Shader " << shader << " (" << (file?file:"") << ") compile error: " << buffer << endl;
 	}
 }
 
@@ -52,12 +52,9 @@ static void validateProgram(GLuint program) {
 
 Shader::Shader(Shader&& n){
    cout<<"moviendo shader "<<shader_id<<endl;
-    shader_fp=n.shader_fp;
-    shader_vp=n.shader_vp;
-    shader_id=n.shader_id;
-    n.shader_fp=0;
-    n.shader_vp=0;
-    n.shader_id=0;
+   swap(shader_id,n.shader_id);
+   swap(shader_vp,n.shader_vp);
+   swap(shader_fp,n.shader_fp);
 }
 Shader& Shader::operator=(Shader&& n){
    cout<<"moviendo shader "<<shader_id<<endl;
@@ -86,7 +83,7 @@ void Shader::init(const std::string& vsFile, const std::string&  fsFile,map<stri
         while((pos=vsText.find(v.first))!=string::npos){
             vsText.replace(pos,v.first.length(),v.second);
         }
-        cout<<vsText<<endl;
+//        cout<<vsText<<endl;
     }
 	//std::cout<<"archivo:"<<vsFile<<std::endl;
 	//std::cout<<"-----"<<std::endl;
@@ -103,7 +100,6 @@ void Shader::init(const std::string& vsFile, const std::string&  fsFile,map<stri
 
 
 	glCompileShader(shader_fp);
-    cout<<"shader error: "<<glGetError()<<endl;
 	validateShader(shader_fp, fsFile.c_str());
 
 	shader_id = glCreateProgram();
@@ -116,26 +112,27 @@ void Shader::init(const std::string& vsFile, const std::string&  fsFile,map<stri
     glBindAttribLocation(shader_id,2,"in_Normal");
     glBindAttribLocation(shader_id,3,"in_idHueso");
     glBindAttribLocation(shader_id,4,"in_peso");
-
+    glBindAttribLocation(shader_id,5,"in_uv");
 	glLinkProgram(shader_id);
 	validateProgram(shader_id);
 	projectionMatrixLocation = glGetUniformLocation(shader_id, "projectionMatrix");
     viewMatrixLocation = glGetUniformLocation(shader_id, "viewMatrix"); 
+    viewMatrixInvLocation = glGetUniformLocation(shader_id, "viewMatrixInv"); 
     modelMatrixLocation = glGetUniformLocation(shader_id, "modelMatrix"); 
     normalMatrixLocation = glGetUniformLocation(shader_id, "normalMatrix"); 
     poseMatrixLocation = glGetUniformLocation(shader_id, "poseMatrix");
     vecVistaLocation = glGetUniformLocation(shader_id, "vecVista");
-    cout<<"Shader(id,vp,fp):("<<shader_id<<","<<shader_vp<<","<<shader_fp<<")"<<endl;
+    textureLocation = glGetUniformLocation(shader_id, "textura");
+    luzLocation = glGetUniformLocation(shader_id, "luz");
+    luzMatrixLocation = glGetUniformLocation(shader_id, "luzMatrix");
+    shadowMapLocation = glGetUniformLocation(shader_id, "shadowMap");
 }
 
 Shader::~Shader() {
 	glDetachShader(shader_id, shader_fp);
 
-    cout<<"liberando shader "<<shader_id<<endl;
 	if(shader_id>0) glDeleteProgram(shader_id);
-    cout<<"liberando fp "<<shader_fp<<endl;
     if(shader_fp>0) glDeleteShader(shader_fp);
-    cout<<"liberando vp "<<shader_vp<<endl;
     if(shader_vp>0) glDeleteShader(shader_vp);
 
 
@@ -147,16 +144,30 @@ unsigned int Shader::id() {
 }
 
 void Shader::bind(const glm::mat4 &matModelo) {
-
+    //<F4>vec3 luz=vec3(0.0,-0.4,0.4);
     if(shader_id>0){
         glUseProgram(shader_id);
 //        cout<<"Binded Shader"<<shader_id<<endl;
         glm::mat4 matNormal=glm::transpose(glm::inverse(matModelo));
+        mat4 matVistaInv=inverse(matVista);
         glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &matProy[0][0]); 
         glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &matVista[0][0]); 
+        glUniformMatrix4fv(viewMatrixInvLocation, 1, GL_FALSE, &matVistaInv[0][0]); 
         glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &matModelo[0][0]); 
         glUniformMatrix4fv(normalMatrixLocation, 1, GL_FALSE, &matNormal[0][0]);
+        glUniformMatrix4fv(luzMatrixLocation, 1, GL_FALSE, &matLuz[0][0]);
         glUniform3fv(vecVistaLocation, 1, &vecVista[0]); 
+        glUniform3fv(luzLocation, 1, &luz[0]); 
+        if(shadowMap!=nullptr){
+        glActiveTexture(GL_TEXTURE0);
+        shadowMap->bind();
+        glUniform1i(shadowMapLocation, 0);
+        }
+        if(usarTex){
+ //           glActiveTexture(GL_TEXTURE0);
+ //           tex->bind();
+ //           glUniform1i(textureLocation, 0);
+        }
     }
 }
 void Shader::bind(const glm::mat4 &matModelo,vector<glm::mat4> pose,vector<glm::mat4> bindPoses) {

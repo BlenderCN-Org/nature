@@ -78,13 +78,13 @@ void Mapa::detectarBordes(){
            for(int y=b.y;y<b.y+b.tam;y++){
                 for(int z=b.z;z<b.z+b.tam;z++){
                 Voxel& v=getVoxel(x,y,z);
-                    if(v.solido){
-                        if((enRango(x-1,y,z)&&!(getVoxel(x-1,y,z).solido))
-                            ||(enRango(x+1,y,z)&&!(getVoxel(x+1,y,z).solido))
-                            ||(enRango(x,y-1,z)&&!(getVoxel(x,y-1,z).solido))
-                            ||(enRango(x,y+1,z)&&!(getVoxel(x,y+1,z).solido))
-                            ||(enRango(x,y,z-1)&&!(getVoxel(x,y,z-1).solido))
-                            ||(enRango(x,y,z+1)&&!(getVoxel(x,y,z+1).solido))){
+                    if(v.solido()){
+                        if((enRango(x-1,y,z)&&!(getVoxel(x-1,y,z).solido()))
+                            ||(enRango(x+1,y,z)&&!(getVoxel(x+1,y,z).solido()))
+                            ||(enRango(x,y-1,z)&&!(getVoxel(x,y-1,z).solido()))
+                            ||(enRango(x,y+1,z)&&!(getVoxel(x,y+1,z).solido()))
+                            ||(enRango(x,y,z-1)&&!(getVoxel(x,y,z-1).solido()))
+                            ||(enRango(x,y,z+1)&&!(getVoxel(x,y,z+1).solido()))){
                                  v.borde=true;
                                  ++cont;
                        }
@@ -96,5 +96,25 @@ void Mapa::detectarBordes(){
         total+=cont;
    }
    cout <<"Total bordes="<<total<<endl;
+
+}
+
+void Mapa::resize(int bloqx,int bloqy,int bloqz,float tamCubo){
+     nbloqx=bloqx;
+     nbloqy=bloqy;
+     nbloqz=bloqz;
+     tamx=bloqx*TAMANO_BLOQUE;
+     tamy=bloqy*TAMANO_BLOQUE;
+     tamz=bloqz*TAMANO_BLOQUE;
+     tamCubo=tamCubo;
+     datos=vector<Voxel>(static_cast<vector<Voxel>::size_type>( tamx*tamy*tamz),Voxel{});
+     bloques.clear();
+     for(int bz=0;bz<bloqz;++bz){
+          for(int by=0;by<bloqy;++by){
+               for(int bx=0;bx<bloqx;++bx){
+                    this->bloques.emplace_back(bx*TAMANO_BLOQUE,by*TAMANO_BLOQUE,bz*TAMANO_BLOQUE,TAMANO_BLOQUE);
+               }
+          }
+     }
 
 }

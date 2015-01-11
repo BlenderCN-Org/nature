@@ -31,8 +31,9 @@ public:
    int getBloquesZ();
    int getTamanoBloque();
    std::vector<Bloque> bloques;
+   std::vector<glm::vec3> paleta;
    void detectarBordes();
-
+   void resize(int nblox,int nbloqy,int nbloqz,float tamCubo=1.0f);
 private:
    int nbloqx;
    int nbloqy;

@@ -16,8 +16,8 @@
 #include "Juego.h"
 Juego* juego;
 ControlCamara* controlCamara;
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 1024;
+const int SCREEN_HEIGHT = 680;
 void fatalError(char *message)
 {
   fprintf(stderr, "main: %s\n", message);
@@ -31,16 +31,22 @@ static void quit( int code )
      * mode and restore the previous video settings,
      * etc.
      */
+#ifndef EMSCRIPTEN
      delete juego;
     SDL_Quit();
 
     /* Exit program. */
+    
     exit( code );
+#endif
 }
 
 float camRotX=0;
 float camRotY=0;
 float camRotZ=0;
+
+int mousex=0;
+int mousey=0;
 
 float camMovX=0;
 float camMovY=0;
@@ -56,16 +62,16 @@ static void manejarTecla( SDL_keysym* keysym ,bool presionada)
 #endif
         break;
      case SDLK_w:
-          camMovY=presionada?1:0;
+          camMovX=presionada?1:0;
           break;
      case SDLK_s:
-          camMovY=presionada?-1:0;;
+          camMovX=presionada?-1:0;;
           break;
      case SDLK_a:
-          camMovX=presionada?-1:0;
+          camMovY=presionada?+1:0;
           break;
      case SDLK_d:
-          camMovX=presionada?1:0;
+          camMovY=presionada?-1:0;
           break;
      case SDLK_q:
           camMovZ=presionada?-1:0;
@@ -74,18 +80,22 @@ static void manejarTecla( SDL_keysym* keysym ,bool presionada)
           camMovZ=presionada?1:0;
           break;
      case SDLK_LEFT:
-          camRotZ=presionada?1:0;
+          camRotZ=presionada?0.01f:0;
           break;
      case SDLK_RIGHT:
-          camRotZ=presionada?-1:0;
+          camRotZ=presionada?-0.01f:0;
           break;
      case SDLK_UP:
-          camRotX=presionada?1:0;
+          camRotX=presionada?0.01f:0;
           break;
      case SDLK_DOWN:
-          camRotX=presionada?-1:0;
+          camRotX=presionada?-0.01f:0;
           break;
      case SDLK_SPACE:
+          if(presionada)
+              juego->presionaSalto();
+          else
+              juego->sueltaSalto();
           break;
     default:
         break;
@@ -100,12 +110,16 @@ static void procesar_eventos( void )
 
     /* Grab all the events off the queue. */
     while( SDL_PollEvent( &event ) ) {
-
+        int xrel;
+        int yrel;
         switch( event.type ) {
         case SDL_MOUSEMOTION:
-            std::cout<<"raton:"<<event.motion.xrel<<","<<event.motion.yrel<<std::endl;
-//            camRotZ=-event.motion.xrel*0.11;
-  //          camRotX=-event.motion.yrel*0.11;
+          xrel=event.motion.xrel;
+            yrel=event.motion.yrel;
+        //  camRotZ=xrel*0.11;
+        //  camRotX=yrel*0.11;
+            controlCamara->ejes(event.motion.yrel/SCREEN_HEIGHT,-event.motion.xrel/SCREEN_WIDTH);
+
             break;
         case SDL_KEYDOWN:
             /* Handle key presses. */
@@ -136,7 +150,7 @@ static void setup_opengl( int width, int height )
        glClearDepth(1.0);       /* pedantic, 1.0 is the default */
 
        /* frame buffer clears should be to black */
-       glClearColor(0.0, 0.0, 0.0, 0.0);
+       glClearColor(0.0, 0.0, 1.0, 1.0);
 
        /* set up projection transform */
       // glMatrixMode(GL_PROJECTION);
@@ -148,12 +162,13 @@ static void setup_opengl( int width, int height )
 }
 
 void game_loop(){
-
-         //std::cout<<"dibujar"<<std::endl;
          procesar_eventos();
-         controlCamara->teclaMovimiento(camMovX*10,camMovY*10,camMovZ*10);
-         controlCamara->ejes(camRotX*10,camRotZ*10);
-         glClearColor(1,1,1,1);
+         float total=abs(camMovX)+abs(camMovY);
+         total=total==0?1:total;
+//         std::cout<<"t(x,y):"<<total<<"("<<camMovX/total<<","<<camMovY/total<<")"<<std::endl;
+         controlCamara->movimiento(camMovX/total,camMovY/total,camMovZ);
+         controlCamara->ejes(camRotX,camRotZ);
+         glClearColor(0.2,0.7,0.9,1);
          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
          juego->loop();
          SDL_GL_SwapBuffers( );
@@ -262,6 +277,8 @@ int main(int argc, char* argv[])
     }
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
+    SDL_ShowCursor(0);
+//    SDL_WM_GrabInput(SDL_GRAB_ON);
     juego=new Juego();
     controlCamara=juego;
   /*** (9) dispatch X events ***/

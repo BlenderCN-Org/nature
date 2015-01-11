@@ -3,10 +3,11 @@
 #include "Colision.h"
 #include "entidades/Entidad.h"
 #include "mapa/Mapa.h"
+#include <vector>
 
 class Colisionador{
     public:
-        Colision revColision(Entidad e,Mapa m);
+        std::vector<Colision> revColision(Entidad& e,Mapa& m);
         
 
 };

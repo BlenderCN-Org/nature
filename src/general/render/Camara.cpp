@@ -18,7 +18,9 @@ Camara::~Camara()
      //dtor
 }
 glm::mat4  Camara::getMat(){
-     mat4 matRot =rotate(mat4(1.0),rot.z,vec3(0,0,1))*rotate(mat4(1.0),rot.x,vec3(1,0,0));
+     if(rot.x<0.1) rot.x=0.1;
+     if(rot.x>179.9) rot.x=179.9;
+     mat4 matRot =rotate(mat4(1.0),radians(rot.z),vec3(0,0,1))*rotate(mat4(1.0),radians(rot.x),vec3(1,0,0));
      return translate(mat4(1.0),pos)*matRot;
 }
 

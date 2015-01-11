@@ -5,24 +5,24 @@
 #include "util/GestorRutas.h"
 #include "openglnat.h"
 #include "Shader.h"
-
+#include "MeshDatos.h"
 enum class UsosVBO{vertices=0,normales,total};
 
 class Mesh
 {
     public:
-        Mesh(std::string nombre);
+        Mesh(MeshDatos d);
         Mesh(const Mesh&)=delete;
         Mesh& operator=(const Mesh&) = delete;
-        Mesh(Mesh&&)=default;
-        Mesh& operator=(Mesh&&) = default;
+        Mesh(Mesh&&);
+        Mesh& operator=(Mesh&&);
         virtual ~Mesh();
         void dibujar(Shader* shader,const glm::mat4 &modelMatrix,bool cullBack=true);
         void dibujar(Shader* shader,const glm::mat4 &modelMatrix,std::vector<glm::mat4> pose,std::vector<glm::mat4> bindPoses,bool cullBack=true);
         void bindAtributtes();
     private:
         GLuint vao;
-        GLuint vbo[6];
+        std::vector<GLuint> vbo=std::vector<GLuint>(7,0);
         int nvert;
         int ncaras;
         bool usarVAO=true;

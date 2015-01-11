@@ -16,5 +16,6 @@ void main(void) {
    }else{
       gl_FragColor=vec4(ex_Color,1.0)*0.6+ambient_color;
    }
+   gl_FragColor=vec4(ex_Color,1.0)*0.8+ambient_color;
 
 }
