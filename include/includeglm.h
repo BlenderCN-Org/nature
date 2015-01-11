@@ -2,6 +2,7 @@
 #define INCLUDEGLM_H_INCLUDED
 
 
+
 #define GLM_FORCE_RADIANS
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -9,4 +10,5 @@
 #include "glm/common.hpp"
 //#include "glm/gtx/quaternion.hpp"
 #include "glm/gtx/quaternion.hpp"
+#include "glm/gtx/vector_angle.hpp"
 #endif // INCLUDEGLM_H_INCLUDED
