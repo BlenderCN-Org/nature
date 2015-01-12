@@ -21,9 +21,9 @@ vector<Colision> Colisionador::revColision(Entidad& e,Mapa& m){
                                   c.pos=glm::vec3(ce.p1.x,ce.p1.y,cv.p1.z+cv.t.z);
                                   glm::vec3 pdir= cv.c-ce.c;
                                   if(abs(pdir.x)>abs(pdir.y)&&abs(pdir.x)>abs(pdir.z)){
-                                      c.adir=glm::vec3(1,1,0);
+                                      c.adir=glm::vec3(1,0,0);
                                   }else if(abs(pdir.y)>abs(pdir.z)){
-                                      c.adir=glm::vec3(1,1,0);
+                                      c.adir=glm::vec3(0,1,0);
                                   }else{
                                       c.adir=glm::vec3(0,0,1);
                                   }

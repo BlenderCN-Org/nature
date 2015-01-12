@@ -12,6 +12,13 @@ bool operator==(RGB c1,RGB c2){
 bool operator!=(RGB c1,RGB c2){
     return c1.r!=c2.r||c1.g!=c2.g||c1.b!=c2.b;
 }
+RGB RGB::conv(glm::vec3 v1){
+    RGB c;
+    c.r=static_cast<png_byte>(v1.r*255.0f);
+    c.g=static_cast<png_byte>(v1.g*255.0f);
+    c.b=static_cast<png_byte>(v1.b*255.0f);
+    return move(c);
+};
 
 Imagen::Imagen(string ruta){
     png_byte header[8];

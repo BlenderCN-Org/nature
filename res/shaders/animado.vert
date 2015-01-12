@@ -1,11 +1,11 @@
-#version 330
+#version 100
 // atributos
-layout(location = 0) in  vec3 in_Position;
-layout(location = 1) in  vec3 in_Color;
-layout(location = 2) in  vec3 in_Normal;
-layout(location = 3) in  float in_idHueso;
-layout(location = 4) in  float in_peso;
-layout(location = 5) in  vec2 in_uv;
+attribute  vec3 in_Position;
+attribute  vec3 in_Color;
+attribute  vec3 in_Normal;
+attribute  float in_idHueso;
+attribute  float in_peso;
+attribute  vec2 in_uv;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -25,13 +25,13 @@ uniform mat4 boneTransforms[%nhuesos%];
 uniform mat4 normalBone[%nhuesos%];
 
 /**iluminacion*/
-out vec3 ex_Color;
-out vec3 vertex_normal;
-out vec3 ex_luz; 
+varying vec3 ex_Color;
+varying vec3 vertex_normal;
+varying vec3 ex_luz; 
 // Salida
-out vec2 uv;
-out vec3 ex_vecVista;
-out vec3 shadowPos;
+varying vec2 uv;
+varying vec3 ex_vecVista;
+varying vec3 shadowPos;
 
 void main(void) {
     int idHueso=int(in_idHueso);

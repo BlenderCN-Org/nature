@@ -29,7 +29,7 @@ shadowMap(2048,2048)
 
      cout<<"Creando juego"<<endl;
      cout<<"Cargando shader "<<endl;
-     luz=vec3(0.1,-1,0.6);
+     luz=vec3(-0.2,-1,0.6);
      Shader* s=new Shader(GestorRutas::getRutaShader("basico.vert"),GestorRutas::getRutaShader("basico.frag"));
      shaders.push_back( unique_ptr<Shader>(s));
 
@@ -156,12 +156,12 @@ void Juego::generarMapa()
           bloques.push(b);
      }
      total=bloques.size();
-//Generador::generar(&mapa,&bloques);
-     MeshDatos md("mapah");
+    // Generador::generar(&mapa,&bloques);
+     MeshDatos md("mapa3");
      Generador::generarVoxelizar(&mapa,md,1.0);
      mapa.detectarBordes();
      repMapa.reset(new RepresentacionMapa(mapa));
-     repMapa->meshUnica=unique_ptr<Mesh>(new Mesh(md));
+//     repMapa->meshUnica=unique_ptr<Mesh>(new Mesh(md));
 
      /*for(int i=0;i<4;++i){
 

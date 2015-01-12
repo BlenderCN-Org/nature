@@ -5,6 +5,7 @@ ShadowMap::ShadowMap(int ancho,int alto):
 tcolor(),tdepth(){
     fb.bind();
     tdepth.bind();
+    //glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, ancho, alto, 0,GL_RGBA, GL_UNSIGNED_BYTE, 0);
     glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT32, ancho, alto, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -12,7 +13,9 @@ tcolor(),tdepth(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, tdepth.id(), 0);
+//    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, tdepth.id(), 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,GL_TEXTURE_2D, tdepth.id(), 0);
+//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D, tcolor.id(), 0);
 /*    tcolor.bind();
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, ancho, alto, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -23,8 +26,8 @@ tcolor(),tdepth(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, tcolor.id(), 0);
 */
- //   GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-//    glDrawBuffers(1, DrawBuffers);
+   // GLenum DrawBuffers[1] = {GL_NONE};
+ //   glDrawBuffers(1, DrawBuffers);
     glDrawBuffer(GL_NONE);
     int est;
     if((est=glCheckFramebufferStatus(GL_FRAMEBUFFER) )!= GL_FRAMEBUFFER_COMPLETE)

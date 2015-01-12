@@ -106,7 +106,7 @@ void Mapa::resize(int bloqx,int bloqy,int bloqz,float tamCubo){
      tamx=bloqx*TAMANO_BLOQUE;
      tamy=bloqy*TAMANO_BLOQUE;
      tamz=bloqz*TAMANO_BLOQUE;
-     tamCubo=tamCubo;
+     this->tamCubo=tamCubo;
      datos=vector<Voxel>(static_cast<vector<Voxel>::size_type>( tamx*tamy*tamz),Voxel{});
      bloques.clear();
      for(int bz=0;bz<bloqz;++bz){

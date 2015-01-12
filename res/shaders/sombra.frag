@@ -1,13 +1,20 @@
-#version 330
-// It was expressed that some drivers required this next line to function properly
-precision highp float;
-
-in vec3 ex_color;
-layout(location = 0) out float fragmentdepth;
-layout(location = 1) out vec4 out_color;
+#version 100
+precision mediump float;
+varying vec3 ex_color;
+vec4 pack (float depth)
+{
+    const vec4 bitSh = vec4(256.0 * 256.0 * 256.0,
+                            256.0 * 256.0,
+                            256.0,
+                            1.0);
+    const vec4 bitMsk = vec4(0,
+                             1.0 / 256.0,
+                             1.0 / 256.0,
+                             1.0 / 256.0);
+    vec4 comp = fract(depth * bitSh);
+    comp -= comp.xxyz * bitMsk;
+    return comp;
+}
 void main(void) {
-//    fragmentdepth = gl_FragCoord.z;
-    fragmentdepth = gl_FragCoord.z;
-//    out_color=vec4(0.52,0.52,0.52,0.52)*gl_FragCoord.z;
-    out_color=vec4(ex_color,1);
+    gl_FragColor=pack(gl_FragCoord.z);
 }

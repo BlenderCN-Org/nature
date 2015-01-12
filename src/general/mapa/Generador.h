@@ -14,7 +14,7 @@ public:
       void static generar(Mapa *m,std::queue<Bloque> *cola);
 
       void static generarPlanicieRocosa(Mapa *m,Bloque &b);
-      void static generarPerlin3d(Bloque &bloque,int bx,int by);
+      void static generarPerlin3d(Mapa *m, Bloque &b);
       void static generarImagen(Mapa *m,Bloque &b,Imagen& sup,Imagen& lat,Imagen& fre);
       void static generarVoxelizar(Mapa *m,MeshDatos& md,float tamCubo=1.0f);
       static std::vector<RGB> paleta;

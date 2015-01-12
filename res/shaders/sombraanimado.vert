@@ -1,11 +1,11 @@
-#version 330
+#version 100
 // in_Position was bound to attribute index 0 and in_Color was bound to attribute index 1
-layout(location = 0) in  vec3 in_Position;
-layout(location = 1) in  vec3 in_Color;
-layout(location = 2) in  vec3 in_Normal;
-layout(location = 3) in  float in_idHueso;
-layout(location = 4) in  float in_peso;
-layout(location = 5) in  float in_uv;
+attribute  vec3 in_Position;
+attribute  vec3 in_Color;
+attribute  vec3 in_Normal;
+attribute  float in_idHueso;
+attribute  float in_peso;
+attribute  float in_uv;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -22,7 +22,7 @@ uniform mat4 bindPoseInv[%nhuesos%];
 uniform mat4 boneTransforms[%nhuesos%];
 uniform mat4 normalBone[%nhuesos%];
 
-out vec3 ex_color;
+varying vec3 ex_color;
 
 void main(void) {
     int idHueso=int(in_idHueso);

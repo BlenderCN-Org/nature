@@ -8,8 +8,10 @@
 #include "png.h"
 struct RGB{
     png_byte r,g,b;
+    static RGB conv(glm::vec3 v1);
 };
 bool operator==(RGB c1,RGB c2);
+
 std::ostream& operator<<(std::ostream& o,RGB c);
 bool operator!=(RGB c1,RGB c2);
 class Imagen{
