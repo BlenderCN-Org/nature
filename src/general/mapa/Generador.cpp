@@ -85,14 +85,20 @@ void Generador::generarPerlin3d(Mapa *m, Bloque &b){
       for(float y=b.y;y<b.y+b.tam;++y){
 	     for(float x=b.x;x<b.x+b.tam;++x){
 
-               float pos=SimplexNoise1234::noise(x*0.002,y*0.002);
+               float pos=SimplexNoise1234::noise(x*0.0008,y*0.0008);
                pos=(pos+1.0f)/2.0f;
                int altura=1+pos*(m->getTamZ()-1);
+               int alturaMax=m->getTamZ();
                vector<RGB>::iterator it;
 	           for(float z=b.z;z<b.z+b.tam;++z){
-                 if(z<=altura){
+                 float den=SimplexNoise1234::noise(x*0.003,y*0.003,z*0.003);
+                 if(z<=altura&&(z<alturaMax*0.1||den>=0)){
                     Voxel& v=m->getVoxel(x,y,z);
-                    c=grama;
+                    if(z>=altura-2){
+                        c=grama;
+                    }else{
+                        c=tierra;
+                    }
                     if((it=find(paleta.begin(),paleta.end(),c))==paleta.end()){
                        paleta.push_back(c);
                        v.r=paleta.size()-1;
@@ -100,6 +106,7 @@ void Generador::generarPerlin3d(Mapa *m, Bloque &b){
                        v.r=std::distance(paleta.begin(),it);
                     }
                  }
+                 
 
 	        }
 	     }

@@ -7,6 +7,8 @@ varying  vec3 ex_Color;
 
 varying vec3 vertex_normal;
 varying vec3 ex_luz;
+varying vec3 ex_uv;
+varying vec4 ex_oclu;
 varying vec3 ex_vecVista;
 varying vec3 shadowPos;
 
@@ -30,6 +32,9 @@ void main(void) {
    if(diffuse_value<0.3||esshadow){
        shadow_value=0.6;
    }
-   out_color=vec4(ex_Color,1.0)*shadow_value+ambient_color;
+   float oclu_value=1-ex_oclu.w*abs(dot(normalize(ex_oclu.xyz),normalize(vertex_normal)));
+   oclu_value=1.0-ex_oclu.w*1.0;
+   out_color=vec4(ex_Color,1.0)*shadow_value*oclu_value+ambient_color;
+
    gl_FragColor=out_color;
 }

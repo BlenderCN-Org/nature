@@ -35,6 +35,7 @@ void MeshDatos::cargar(std::string nombre){
            f.read((char*)&peso[0],sizeof(float)*nvert);
            f.read((char*)&ncaras,sizeof(int));
            uv.resize(nvert,vec2(0,0));
+           oclusion.resize(nvert,vec4(0,0,0,0));
            if(ncaras>0){
                caras.resize(ncaras*3);
                f.read((char*)&caras[0],sizeof(GLuint)*ncaras*3);

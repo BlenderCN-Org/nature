@@ -6,6 +6,7 @@ attribute  vec3 in_Normal;
 attribute  float in_idHueso;
 attribute  float in_peso;
 attribute  vec2 in_uv;
+attribute  vec4 in_oclu;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -29,10 +30,11 @@ varying vec3 ex_Color;
 varying vec3 vertex_normal;
 varying vec3 ex_luz; 
 // Salida
-varying vec2 uv;
+varying vec2 ex_uv;
 varying vec3 ex_vecVista;
 varying vec3 shadowPos;
 
+varying vec4 ex_oclu;
 void main(void) {
     int idHueso=int(in_idHueso);
     vec4 pos=modelMatrix*boneTransforms[idHueso]*vec4(in_Position,1.0);
@@ -42,6 +44,7 @@ void main(void) {
     ex_vecVista=vec3(viewMatrixInv*vec4(0.0,0.0,0.0,1.0)-pos);
     ex_luz=(viewMatrix*vec4(luz,1)).xyz;
     ex_luz=luz;
-    uv=in_uv;
+    ex_uv=in_uv;
+    ex_oclu=in_oclu;
     ex_Color = in_Color;
 }

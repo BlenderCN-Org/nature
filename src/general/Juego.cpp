@@ -22,8 +22,8 @@ void imprimirMatriz(mat4 mat){
     }
 }
 Juego::Juego():
-mapa{5,3,3},
-camara(45.0f, 640.0f / 480.0f, 1.0f, 600.f),
+mapa{10,10,4},
+camara(45.0f, 640.0f / 480.0f, 1.0f, 2000.f),
 shadowMap(2048,2048) 
 {
 
@@ -156,8 +156,8 @@ void Juego::generarMapa()
           bloques.push(b);
      }
      total=bloques.size();
-    // Generador::generar(&mapa,&bloques);
-     MeshDatos md("mapa3");
+     Generador::generar(&mapa,&bloques);
+     MeshDatos md("mapa");
      Generador::generarVoxelizar(&mapa,md,1.0);
      mapa.detectarBordes();
      repMapa.reset(new RepresentacionMapa(mapa));
@@ -272,7 +272,7 @@ void Juego::loop()
            }
            r.ani->act(t.delta());
            r.mesh->dibujar(r.shader,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses);
-    //       r.mesh->dibujar(r.shaderBorde,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses,false);
+//           r.mesh->dibujar(r.shaderBorde,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses,false);
        }else{
            r.mesh->dibujar(r.shader,r.ent->getMatModelo());
   //         r.mesh->dibujar(r.shaderBorde,r.ent->getMatModelo(),false);

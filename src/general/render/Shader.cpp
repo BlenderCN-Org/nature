@@ -113,6 +113,7 @@ void Shader::init(const std::string& vsFile, const std::string&  fsFile,map<stri
     glBindAttribLocation(shader_id,3,"in_idHueso");
     glBindAttribLocation(shader_id,4,"in_peso");
     glBindAttribLocation(shader_id,5,"in_uv");
+    glBindAttribLocation(shader_id,6,"in_oclu");
 	glLinkProgram(shader_id);
 	validateProgram(shader_id);
 	projectionMatrixLocation = glGetUniformLocation(shader_id, "projectionMatrix");

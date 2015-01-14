@@ -6,6 +6,7 @@ attribute  vec3 in_Normal;
 attribute  float in_idHueso;
 attribute  float in_peso;
 attribute  vec2 in_uv;
+attribute  vec4 in_oclu;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -19,7 +20,8 @@ uniform vec3 luz;
 varying vec3 ex_Color;
 varying vec3 vertex_normal;
 varying vec3 ex_luz;
-varying vec2 uv;
+varying vec2 ex_uv;
+varying vec4 ex_oclu;
 varying vec3 ex_vecVista;
 varying vec3 shadowPos;
 
@@ -32,7 +34,8 @@ void main(void) {
     vertex_normal=normalize(mat3(normalMatrix)*in_Normal);
     ex_luz=(viewMatrix*vec4(luz,0.0)).xyz;
     ex_luz=luz;
-    uv=in_uv;
+    ex_uv=in_uv;
+    ex_oclu=in_oclu;
     ex_Color = in_Color;
     ex_vecVista=vec3(viewMatrixInv*vec4(0.0,0.0,0.0,1.0)-pos);
 }

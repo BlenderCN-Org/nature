@@ -29,6 +29,7 @@ MeshBloque& MeshBloque::operator=(MeshBloque&& viejo){
 };
 void MeshBloque::vertex(Mapa& m, Bloque& b){
      vector<vec3> ver;
+     vector<vec4> ocl;
      vector<vec3> nor;
      vector<float> col;
      vector<unsigned int> caras;
@@ -42,13 +43,24 @@ void MeshBloque::vertex(Mapa& m, Bloque& b){
                 if(vox.solido()&&vox.borde){
                     vec3 pa=vec3(x,y,z);
                     vec3 v=vec3(1,0,0);
+                    vec3 v2=vec3(1,0,1);//for ambient oclussion
+                    vec3 v3=vec3(1,-1,0);//for ambient oclussion
+                    vec3 v4=vec3(1,-1,1);//for ambient oclussion
                     vec3 centro=vec3(pa.x*f,pa.y*f,pa.z*f);
+
                     vec3 verca[4];
                     verca[0]={f/2,-f/2,+f/2};
                     verca[1]={f/2,+f/2,+f/2};
                     verca[2]={f/2,+f/2,-f/2};
                     verca[3]={f/2,-f/2,-f/2};
+
+                    vec3 ocln[4];
+                    ocln[0]=normalize(vec3(1,-1,1));
+                    ocln[1]=normalize(vec3(1,1,1));
+                    ocln[2]=normalize(vec3(1,1,-1));
+                    ocln[3]=normalize(vec3(1,-1,-1));
                     mat3 r=toMat3(quat(radians(vec3(0,0,90))));
+
                     for(int i=0;i<6;i++){
                         if(i==3) r=toMat3(quat(radians(vec3(90,0,0))));
                         if(i==4) r=toMat3(quat(radians(vec3(180,0,0))));
@@ -56,29 +68,60 @@ void MeshBloque::vertex(Mapa& m, Bloque& b){
                         if(m.enRango((int)round(p.x),(int)round(p.y),(int)round(p.z))
                            &&!(m.getVoxel((int)round(p.x),(int)round(p.y),(int)round(p.z)).solido())){
                             int size=ver.size();
+                            vec3 voclu1=v2-v;
+                            vec3 voclu2=v3-v;
+                            vec3 voclu3=v4-v;
+                            vec3 po1=p+voclu1;
+                            vec3 po2=p+voclu2;
+                            vec3 po3=p+voclu3;
                             for(int j=0;j<4;j++){
+                                vec4 oc=vec4(ocln[j],0.0);
+                                if(m.getVoxel((int)round(po1.x),(int)round(po1.y),(int)round(po1.z)).solido())
+                                   oc.w+=0.3;
+                                if (m.getVoxel((int)round(po3.x),(int)round(po3.y),(int)round(po3.z)).solido())
+                                   oc.w+=0.3;
+                                if(m.getVoxel((int)round(po2.x),(int)round(po2.y),(int)round(po2.z)).solido())
+                                   oc.w+=0.3;
                                 ver.push_back(centro+verca[j]);
                                 nor.push_back(v);
                                 vec3 caux=m.paleta[vox.r];
                                 col.push_back(caux.r);col.push_back(caux.g);col.push_back(caux.b);
-                                //col.push_back(0.5f);col.push_back(0.2f);col.push_back(0.2f);
-
+                                ocl.push_back(oc);
+                                mat3 r2=toMat3(quat(radians(vec3(90,90,90)*-v)));
+                                voclu1=r2*voclu1;
+                                voclu2=r2*voclu2;
+                                voclu3=r2*voclu3;
+                                po1=p+voclu1;
+                                po2=p+voclu2;
+                                po3=p+voclu3;
                             }
-                            caras.push_back(size);
-                            caras.push_back(size+2);
-                            caras.push_back(size+1);
+                            if(ocl[ocl.size()-4].w+ocl[ocl.size()-1].w>ocl[ocl.size()-2].w+ocl[ocl.size()-3].w){
+                                caras.push_back(size+3);
+                                caras.push_back(size+1);
+                                caras.push_back(size);
 
-                            caras.push_back(size);
-                            caras.push_back(size+3);
-                            caras.push_back(size+2);
-                        } else{
-                         //       std::cout << std::fixed;
-                        //      if(v.z>0.0f&&v.z<1.0f) cout<<setprecision(20)<<"omitiendo; ("<<v.x<<","<<v.y<<","<<(int)v.z<<")"<<endl;
+                                caras.push_back(size+3);
+                                caras.push_back(size+2);
+                                caras.push_back(size+1);
+                            }else{
+                                caras.push_back(size);
+                                caras.push_back(size+2);
+                                caras.push_back(size+1);
+
+                                caras.push_back(size);
+                                caras.push_back(size+3);
+                                caras.push_back(size+2);
                             }
+                        } 
 
                         v=r*v;
-                        for(int j=0;j<4;j++)
+                        v2=r*v2;
+                        v3=r*v3;
+                        v4=r*v4;
+                        for(int j=0;j<4;j++){
                             verca[j]=r*verca[j];
+                            ocln[j]=r*ocln[j];
+                        }
                     }
                 }
             }
@@ -123,10 +166,25 @@ void MeshBloque::vertex(Mapa& m, Bloque& b){
      glVertexAttribPointer((GLuint)2, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
      // Set up our vertex attributes pointer
+     //UV
+     glEnableVertexAttribArray(5);
+     glBindBuffer(GL_ARRAY_BUFFER, vbo[3]); // Bind our Vertex Buffer Object
+     glBufferData(GL_ARRAY_BUFFER, ocl.size()*4, (float*)&ocl[0], GL_STATIC_DRAW); // Set the size and data of our VBO and set it to STATIC_DRAW
+     revisarError2("llenar uv");
+     glVertexAttribPointer((GLuint)5, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+     // Set up our vertex attributes pointer
+     //Oclussion
+     glEnableVertexAttribArray(6);
+     glBindBuffer(GL_ARRAY_BUFFER, vbo[4]); // Bind our Vertex Buffer Object
+     glBufferData(GL_ARRAY_BUFFER, ocl.size()*4*4, (float*)&ocl[0], GL_STATIC_DRAW); // Set the size and data of our VBO and set it to STATIC_DRAW
+     revisarError2("llenar oclusion");
+     glVertexAttribPointer((GLuint)6, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
 
 
      //Caras
-     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[3]); // Bind our Vertex Buffer Object
+     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[5]); // Bind our Vertex Buffer Object
      glBufferData(GL_ELEMENT_ARRAY_BUFFER, caras.size()*sizeof(unsigned int), &caras[0], GL_STATIC_DRAW);
 
 
@@ -155,8 +213,16 @@ void MeshBloque::bindAtributtes(){
        glEnableVertexAttribArray(2);
        glBindBuffer(GL_ARRAY_BUFFER, vbo[2]); 
        glVertexAttribPointer((GLuint)2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+       //UV
+       glEnableVertexAttribArray(5);
+       glBindBuffer(GL_ARRAY_BUFFER, vbo[3]); 
+       glVertexAttribPointer((GLuint)5, 2, GL_FLOAT, GL_FALSE, 0, 0);
+       //Oclusion
+       glEnableVertexAttribArray(6);
+       glBindBuffer(GL_ARRAY_BUFFER, vbo[4]); 
+       glVertexAttribPointer((GLuint)6, 4, GL_FLOAT, GL_FALSE, 0, 0);
      //Caras
-       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[3]); 
+       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[5]); 
 }
 MeshBloque::~MeshBloque()
 {

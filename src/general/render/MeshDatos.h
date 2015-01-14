@@ -14,6 +14,7 @@ class MeshDatos{
         std::vector<glm::vec3> vert;
         std::vector<glm::vec3> normal;
         std::vector<glm::vec3> color;
+        std::vector<glm::vec4> oclusion;
         std::vector<float> peso;
         std::vector<float> hueso;
         std::vector<glm::vec2> uv;

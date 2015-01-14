@@ -62,10 +62,15 @@ Mesh::Mesh(MeshDatos d)
       glBindBuffer(GL_ARRAY_BUFFER, vbo[5]);
       glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float)*2, &d.uv[0], GL_STATIC_DRAW);
       glVertexAttribPointer((GLuint)5, 2, GL_FLOAT, GL_FALSE, 0, 0);
-      
+      //Oclussion
+      glEnableVertexAttribArray(6);
+      glBindBuffer(GL_ARRAY_BUFFER, vbo[6]);
+      glBufferData(GL_ARRAY_BUFFER, nvert*sizeof(float)*4, &d.oclusion[0], GL_STATIC_DRAW);
+      glVertexAttribPointer((GLuint)6, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
     // Set up our vertex attributes pointer
     //Caras
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[6]); 
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[7]); 
       glBufferData(GL_ELEMENT_ARRAY_BUFFER, ncaras*sizeof(int)*3, &d.caras[0], GL_STATIC_DRAW);
 
       if(usarVAO){
@@ -86,16 +91,10 @@ Mesh::~Mesh()
 void Mesh::bindAtributtes(){
        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]); // Bind our Vertex Buffer Object
        glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0); // Set up our vertex attributes pointer
-
-
-
-
        //Colores
        glEnableVertexAttribArray(1);
        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]); // Bind our Vertex Buffer Object
        glVertexAttribPointer((GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, 0); // Set up our vertex attributes pointer
-
-
        //Normales
        glEnableVertexAttribArray(2);
        glBindBuffer(GL_ARRAY_BUFFER, vbo[2]); // Bind our Vertex Buffer Object
@@ -113,11 +112,16 @@ void Mesh::bindAtributtes(){
        glEnableVertexAttribArray(5);
        glBindBuffer(GL_ARRAY_BUFFER, vbo[5]); // Bind our Vertex Buffer Object
        glVertexAttribPointer((GLuint)5, 2, GL_FLOAT, GL_FALSE, 0, 0);
+       //aOclusion
+       glEnableVertexAttribArray(6);
+       glBindBuffer(GL_ARRAY_BUFFER, vbo[6]); // Bind our Vertex Buffer Object
+       glVertexAttribPointer((GLuint)6, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
 
 
       // Set up our vertex attributes pointer
      //Caras
-       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[6]); // Bind our Vertex Buffer Object
+       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[7]); // Bind our Vertex Buffer Object
 
 }
 void revisarError(string modulo){

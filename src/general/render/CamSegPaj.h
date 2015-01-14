@@ -15,7 +15,7 @@ class CamSegPaj:public ControlCamara{
    private:
        glm::vec3 rot;
        float minx=32;
-       float maxx=90;
+       float maxx=145;
        float minz=-179;
        float maxz=179;
 

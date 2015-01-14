@@ -19,7 +19,7 @@ class MeshBloque
 
      private:
          GLuint vao=0;
-         std::vector<GLuint> vbo=std::vector<GLuint>(4,0);
+         std::vector<GLuint> vbo=std::vector<GLuint>(6,0);
          int nvert;
          int ncaras;
 

@@ -22,7 +22,7 @@ class Mesh
         void bindAtributtes();
     private:
         GLuint vao;
-        std::vector<GLuint> vbo=std::vector<GLuint>(7,0);
+        std::vector<GLuint> vbo=std::vector<GLuint>(8,0);
         int nvert;
         int ncaras;
         bool usarVAO=true;
