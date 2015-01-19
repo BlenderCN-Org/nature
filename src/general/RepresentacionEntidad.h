@@ -9,7 +9,7 @@ class RepresentacionEntidad
 {
      public:
           std::unique_ptr<Entidad> ent;
-          std::unique_ptr<Mesh> mesh;
+          std::shared_ptr<Mesh> mesh;
           std::unique_ptr<Esqueleto> esq;
           std::unique_ptr<Animador> ani;
           Shader* shader;

@@ -33,22 +33,8 @@ shadowMap(2048,2048)
      Shader* s=new Shader(GestorRutas::getRutaShader("basico.vert"),GestorRutas::getRutaShader("basico.frag"));
      shaders.push_back( unique_ptr<Shader>(s));
 
-     s=new Shader(GestorRutas::getRutaShader("basico.vert"),GestorRutas::getRutaShader("textura.frag"));
-     s->usarTex=true;
-     Imagen img(GestorRutas::getRuta("islablender.png"));
-     s->tex= new Textura(img);
-     shaders.push_back( unique_ptr<Shader>(s));
-
-     cout<<"Borde "<<endl;
-     s=new Shader(GestorRutas::getRutaShader("borde.vert"),GestorRutas::getRutaShader("basico.frag"));
-     shaders.push_back( unique_ptr<Shader>(s));
-
      cout<<"Animado 1"<<endl;
      s=new Shader(GestorRutas::getRutaShader("animado.vert"),GestorRutas::getRutaShader("basico.frag"),map<string,string>{{"%nhuesos%","6"}});
-     shaders.push_back( unique_ptr<Shader>(s));
-
-     cout<<"Animado Borde 1"<<endl;
-     s=new Shader(GestorRutas::getRutaShader("bordeanimado.vert"),GestorRutas::getRutaShader("basico.frag"),map<string,string>{{"%nhuesos%","6"}});
      shaders.push_back( unique_ptr<Shader>(s));
 
      cout<<"Sombra"<<endl;
@@ -70,12 +56,12 @@ shadowMap(2048,2048)
      repCubico.ent->rebote=0.0f;
      repCubico.ent->vel=vec3(0.0f,0.0f,09.0f);
      repCubico.ent->ace=vec3(0.0f,0.0f,0.0f);
-     repCubico.shader=shaders[3].get();
-     repCubico.shaderBorde=shaders[4].get();
-     repCubico.shaderSombra=shaders[6].get();
+     repCubico.shader=shaders[1].get();
+     repCubico.shaderBorde=shaders[1].get();
+     repCubico.shaderSombra=shaders[3].get();
 
      RepresentacionEntidad repEjes;
-     repEjes.mesh=unique_ptr<Mesh>(new Mesh(MeshDatos("capibara")));
+     repEjes.mesh=unique_ptr<Mesh>(new Mesh(MeshDatos("dragoncubico")));
      //repEjes.mesh=unique_ptr<Mesh>(new Mesh(MeshDatos::plano(10,10)));
      repEjes.ent=unique_ptr<Entidad>(new Entidad());
      repEjes.ent->gravedad=1.0f;
@@ -84,8 +70,8 @@ shadowMap(2048,2048)
      repEjes.ent->vel=vec3(0.0f,0.0f,09.0f);
      repEjes.ent->ace=vec3(0.0f,0.0f,0.0f);
      repEjes.shader=shaders[0].get();
-     repEjes.shaderBorde=shaders[2].get();
-     repEjes.shaderSombra=shaders[5].get();
+     repEjes.shaderBorde=shaders[0].get();
+     repEjes.shaderSombra=shaders[2].get();
      
      ctrCam=unique_ptr<ControlCamara>(new CamSegPaj(vec3(32,0,-90),repCubico.ent.get(),&camara));
      rep.push_back(move(repCubico));
@@ -141,17 +127,9 @@ void Juego::ejeMovimiento(float x,float y){
 
 void Juego::generarMapa()
 {
-//     thread hilos[4];
-
-     DEBUG(/*{{{*/
-           cout<<"sizeof(Voxel)="<<sizeof(Voxel)<<"; Tamano Mapa="<<30*30*4*32*32*32*sizeof(Voxel)/1000/1000<<endl;
-     )/*}}}*/
- //    unique_ptr<mutex>  mt{new mutex()};
      queue<Bloque> bloques;
      int total=0;
      int actual=0;
-     
-
      for(Bloque b:mapa.bloques){
           bloques.push(b);
      }
@@ -161,29 +139,7 @@ void Juego::generarMapa()
      Generador::generarVoxelizar(&mapa,md,1.0);
      mapa.detectarBordes();
      repMapa.reset(new RepresentacionMapa(mapa));
-//     repMapa->meshUnica=unique_ptr<Mesh>(new Mesh(md));
-
-     /*for(int i=0;i<4;++i){
-
-          hilos[i]=thread(&Generador::generar,&mapa,&bloques,mt.get());
-     }
-     bool vacia=false;
-     do{
-          mt->lock();
-          vacia=bloques.empty();
-            actual=total-bloques.size();
-          mt->unlock();
-*/
-          DEBUG(/*{{{*/
-                  cout<<"Generados "<<actual<<" de "<<total<<endl;
-          )/*}}}*/
-  /*   }while(!vacia);
-     */
-
-
-     /*for(int i=0;i<4;++i){
-          hilos[i].join();
-     }*/
+     repMapa->meshUnica=unique_ptr<Mesh>(new Mesh(md));
 }
 void Juego::loop()
 {
@@ -217,7 +173,7 @@ void Juego::loop()
 //   cout<<"Renderizar ShadowMap"<<endl;
    shadowMap.bind(); 
    vec3 centro=vec3(mapa.getTamX()/2,mapa.getTamY()/2,mapa.getTamZ()/2);
-   mat4 matLuz;
+
    glm::mat4 biasMatrix(
 0.5, 0.0, 0.0, 0.0,
 0.0, 0.5, 0.0, 0.0,
@@ -239,15 +195,17 @@ void Juego::loop()
        }
    }
    if(repMapa->meshUnica){
-       repMapa->meshUnica->dibujar(shaders[5].get(),mat4(1.0f));
+       repMapa->meshUnica->dibujar(shaders[2].get(),mat4(1.0f));
    }else for(unique_ptr<MeshBloque>& mesh:repMapa->meshes){
        mesh->dibujar(shaders[5].get(),mat4(1.0f));
    }
    shadowMap.unbind();
-   glViewport(0,0,1024,680);   
-//   shaders[1]->tex=&shadowMap.tcolor;
+   render();
+   
+}
 
-//   cout<<"Renderizar Escena"<<endl;
+void Juego::render(){
+   glViewport(0,0,1024,680); 
    for (RepresentacionEntidad &r:rep){
            r.shader->matLuz=matLuz;
            r.shader->shadowMap=&shadowMap.tdepth;
@@ -271,16 +229,14 @@ void Juego::loop()
                break;
            }
            r.ani->act(t.delta());
-           r.mesh->dibujar(r.shader,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses);
-//           r.mesh->dibujar(r.shaderBorde,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses,false);
+     //      r.mesh->dibujar(r.shader,r.ent->getMatModelo(),r.ani->getPose(),r.esq->bindPoses);
        }else{
-           r.mesh->dibujar(r.shader,r.ent->getMatModelo());
-  //         r.mesh->dibujar(r.shaderBorde,r.ent->getMatModelo(),false);
+   //        r.mesh->dibujar(r.shader,r.ent->getMatModelo());
        }
    }
    if(repMapa->meshUnica){
-       repMapa->meshUnica->dibujar(shaders[0].get(),mat4(1.0f));
+      // repMapa->meshUnica->dibujar(shaders[0].get(),mat4(1.0f));
    }else for(unique_ptr<MeshBloque>& mesh:repMapa->meshes){
-       mesh->dibujar(shaders[0].get(),mat4(1.0f));
+      // mesh->dibujar(shaders[0].get(),mat4(1.0f));
    }
 }

@@ -38,6 +38,7 @@ class Juego:public ControlCamara,ControlJugador
           virtual void sueltaSalto(); 
           virtual void ejeMovimiento(float x,float y); 
           void generarMapa();
+          void render();
      private:
           Mapa mapa;
           Fisica fisica;
@@ -52,6 +53,7 @@ class Juego:public ControlCamara,ControlJugador
           std::unique_ptr<MeshEsqueleto> esqMesh;
           std::unique_ptr<Mesh> cubo;
           glm::vec3 luz;
+          glm::mat4 matLuz;
            
 };
 

@@ -24,12 +24,15 @@ void Personaje::detenerSalto(){
 }
 void Personaje::ejesMover(float x, float y){
     if(x!=0.0f||y!=0){
-//      if(estado!=Estado::Saltando&&estado!=Estado::Cayendo){
+      if(estado!=Estado::Saltando&&estado!=Estado::Cayendo){
           direccion=quat(vec3(0,0,orientedAngle(normalize(vec3(x,y,0)),vec3(0,-1,0),vec3(0,0,-1))));
           vel.x=x*22;
           vel.y=y*22;
           estado=Estado::Corriendo;
-  //    }
+      }else{
+          vel.x=x*22;
+          vel.y=y*22;
+      }
       
     }else{
 
