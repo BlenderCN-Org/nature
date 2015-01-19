@@ -32,7 +32,6 @@ shadowMap(2048,2048)
      luz=vec3(-0.2,-1,0.6);
      Shader* s=new Shader(GestorRutas::getRutaShader("basico.vert"),GestorRutas::getRutaShader("basico.frag"));
      shaders.push_back( unique_ptr<Shader>(s));
-
      cout<<"Animado 1"<<endl;
      s=new Shader(GestorRutas::getRutaShader("animado.vert"),GestorRutas::getRutaShader("basico.frag"),map<string,string>{{"%nhuesos%","6"}});
      shaders.push_back( unique_ptr<Shader>(s));

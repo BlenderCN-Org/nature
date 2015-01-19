@@ -1,4 +1,4 @@
-#version 100
+#version 120
 // atributos
 attribute  vec3 in_Position;
 attribute  vec3 in_Color;
