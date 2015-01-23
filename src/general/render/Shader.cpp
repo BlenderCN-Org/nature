@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <utility>
-#include "util/GestorRutas.h"
+#include "util/Path.h"
 
 
 using namespace std;
@@ -16,7 +16,6 @@ std::string leerArchivo(const string& nombre) {
 	std::ifstream f{nombre, std::ios::in };
     std::stringstream buffer;
     buffer << f.rdbuf();
-    //cout<<"shader content"<<buffer.str()<<endl;
     return buffer.str();
 }
 
@@ -101,7 +100,6 @@ void Shader::init(const std::string& vsFile, const std::string&  fsFile,map<stri
 
 	glCompileShader(shader_fp);
 	validateShader(shader_fp, fsFile.c_str());
-
 	shader_id = glCreateProgram();
 	glAttachShader(shader_id, shader_fp);
 	glAttachShader(shader_id, shader_vp);
@@ -131,19 +129,19 @@ void Shader::init(const std::string& vsFile, const std::string&  fsFile,map<stri
 
 Shader::~Shader() {
 	glDetachShader(shader_id, shader_fp);
-
 	if(shader_id>0) glDeleteProgram(shader_id);
     if(shader_fp>0) glDeleteShader(shader_fp);
     if(shader_vp>0) glDeleteShader(shader_vp);
-
-
-
 }
 
 unsigned int Shader::id() {
 	return shader_id;
 }
-
+void Shader::bind() {
+    if(shader_id>0){
+        glUseProgram(shader_id);
+    }
+}
 void Shader::bind(const glm::mat4 &matModelo) {
     //<F4>vec3 luz=vec3(0.0,-0.4,0.4);
     if(shader_id>0){
@@ -159,15 +157,10 @@ void Shader::bind(const glm::mat4 &matModelo) {
         glUniformMatrix4fv(luzMatrixLocation, 1, GL_FALSE, &matLuz[0][0]);
         glUniform3fv(vecVistaLocation, 1, &vecVista[0]); 
         glUniform3fv(luzLocation, 1, &luz[0]); 
-        if(shadowMap!=nullptr){
-        glActiveTexture(GL_TEXTURE0);
-        shadowMap->bind();
-        glUniform1i(shadowMapLocation, 0);
-        }
-        if(usarTex){
- //           glActiveTexture(GL_TEXTURE0);
- //           tex->bind();
- //           glUniform1i(textureLocation, 0);
+        if(tex!=nullptr&&usarTex){
+            glActiveTexture(GL_TEXTURE0);
+            tex->bind();
+            glUniform1i(textureLocation, 0);
         }
     }
 }
@@ -202,9 +195,78 @@ void Shader::bind(const glm::mat4 &matModelo,vector<glm::mat4> pose,vector<glm::
          glUniformMatrix4fv(boneTransformsLocation, boneTransform.size(), GL_FALSE, (float*)boneTransform.data()); 
          glUniformMatrix4fv(normalBoneLocation, normalBone.size(), GL_FALSE, (float*)normalBone.data()); 
          glUniform3fv(coloresPos, colores.size(),  (float*)colores.data()); 
-
     }
 }
 void Shader::unbind() {
 	glUseProgram(0);
+} 
+int Shader::loc(string n){
+    return  glGetUniformLocation(shader_id, n.c_str());
 }
+
+void Shader::setfloat(string n,float v){
+    glUniform1f(loc(n),   v); 
+}
+void Shader::setfloat(string n,vector<float> &v){
+    glUniform1fv(loc(n), v.size(), &v[0]); 
+}
+void Shader::setfloat(string n,int size,float* v){
+    glUniform1fv(loc(n), size, v); 
+}
+/**vec2***/
+void Shader::setvec2(string n,vec2 v){
+    glUniform2fv(loc(n), 1,  &v[0]); 
+}
+void Shader::setvec2(string n,vector<vec2> &v){
+    glUniform2fv(loc(n), v.size(),  &v[0][0]); 
+}
+void Shader::setvec2(string n,int size,float* v){
+    glUniform2fv(loc(n), size, v); 
+}
+/**vec3***/
+void Shader::setvec3(string n,vec3 v){
+    glUniform3fv(loc(n), 1,  &v[0]); 
+
+}
+void Shader::setvec3(string n,vector<vec3> &v){
+    glUniform3fv(loc(n), v.size(),  &v[0][0]); 
+}
+void Shader::setvec3(string n,int size,float* v){
+    glUniform3fv(loc(n), size, v); 
+}
+/**vec4***/
+void Shader::setvec4(string n,vec4 v){
+    glUniform4fv(loc(n), 1,  &v[0]); 
+}
+void Shader::setvec4(string n,vector<vec4> &v){
+    glUniform4fv(loc(n), v.size(),  &v[0][0]); 
+}
+void Shader::setvec4(string n,int size,float* v){
+    glUniform4fv(loc(n), size, v); 
+}
+/***Mat3***/
+void Shader::setmat3(string n,glm::mat3 v){
+    glUniformMatrix3fv(loc(n), 1, GL_FALSE, &v[0][0]); 
+}
+void Shader::setmat3(string n,vector<glm::mat3> &v){
+    glUniformMatrix3fv(loc(n), v.size(), GL_FALSE, &v[0][0][0]); 
+}
+void Shader::setmat3(string n,int size,float* v){
+    glUniformMatrix3fv(loc(n), size, GL_FALSE,v); 
+}
+/***Mat4***/
+void Shader::setmat4(string n,glm::mat4 v){
+    glUniformMatrix4fv(loc(n), 1, GL_FALSE, &v[0][0]); 
+}
+void Shader::setmat4(string n,vector<glm::mat4> &v){
+    glUniformMatrix4fv(loc(n), v.size(), GL_FALSE, &v[0][0][0]); 
+}
+void Shader::setmat4(string n,int size,float* v){
+    glUniformMatrix4fv(loc(n), size, GL_FALSE,v); 
+}
+void Shader::settexture(string n,int i,Textura& t){
+    glActiveTexture(GL_TEXTURE0+i);
+    t.bind();
+    glUniform1i(loc(n), i);
+}
+

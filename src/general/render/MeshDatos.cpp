@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
-#include "util/GestorRutas.h"
+#include "util/Path.h"
 using namespace std;
 using namespace glm;
 MeshDatos::MeshDatos(std::string nombre){
@@ -16,25 +16,27 @@ void MeshDatos::cargar(std::string nombre){
     ifstream f;
     int nvert;
     int ncaras;
-    f.open(GestorRutas::getRutaMesh(nombre),  ios::in |  ios::binary);
+    f.open(Path::mesh(nombre),  ios::in |  ios::binary);
     if(!f.is_open()){
-       cout<<"error abriendo"<<GestorRutas::getRutaMesh(nombre)<< endl;
+       cout<<"error abriendo"<<Path::mesh(nombre)<< endl;
     }else{
         f.read((char*)&nvert,sizeof(int));
           cout<<sizeof(int)<<":vertices="<<nvert<< endl;
           vert.resize(nvert);
           normal.resize(nvert);
           color.resize(nvert);
+          uv.resize(nvert,vec2(0,0));
           hueso.resize(nvert);
           peso.resize(nvert);
         if(nvert>0){
            f.read((char*)&vert[0],sizeof(vec3)*nvert);
            f.read((char*)&normal[0],sizeof(vec3)*nvert);
            f.read((char*)&color[0],sizeof(vec3)*nvert);
+           f.read((char*)&uv[0],sizeof(vec2)*nvert);
            f.read((char*)&hueso[0],sizeof(float)*nvert);
            f.read((char*)&peso[0],sizeof(float)*nvert);
            f.read((char*)&ncaras,sizeof(int));
-           uv.resize(nvert,vec2(0,0));
+
            oclusion.resize(nvert,vec4(0,0,0,0));
            if(ncaras>0){
                caras.resize(ncaras*3);

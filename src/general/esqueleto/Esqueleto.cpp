@@ -2,7 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include "util/GestorRutas.h"
+#include "util/Path.h"
 #include "config.h"
 using namespace std;
 void imprimirMatriz3(glm::mat4 mat){
@@ -18,9 +18,9 @@ Esqueleto::Esqueleto(const string ruta){
        ifstream f;
        int nh; //numero de huesos
        int na; //numero de animaciones
-       f.open(GestorRutas::getRuta(ruta),  ios::in |  ios::binary);
+       f.open(Path::res(ruta),  ios::in |  ios::binary);
        if(!f.is_open()){
-           cout<<"error abriendo"<<GestorRutas::getRuta(ruta)<< endl;
+           cout<<"error abriendo"<<Path::res(ruta)<< endl;
        }else{
             f.read((char*)&nh,sizeof(int));
             DEBUG(/*{{{*/

@@ -132,6 +132,18 @@ void revisarError(string modulo){
      //   cout<<modulo<<": todo mal:"<<error<< endl;
     }
 }
+void Mesh::dibujar(bool cullBack)
+{ 
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(cullBack?GL_BACK:GL_FRONT);
+     if(!usarVAO){
+          bindAtributtes();
+     }else{
+     }
+     glDrawElements(GL_TRIANGLES, ncaras*3,GL_UNSIGNED_INT, (void*)0 ); // Draw our square
+}
 void Mesh::dibujar(Shader* shader,const glm::mat4 &modelMatrix,bool cullBack)
 { 
     glEnable(GL_DEPTH_TEST);

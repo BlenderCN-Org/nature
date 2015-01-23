@@ -7,8 +7,7 @@ Textura::Textura(){
     glBindTexture(GL_TEXTURE_2D, texId);
 
 }
-
-Textura::Textura(Imagen& i){
+Textura::Textura(const Imagen& i){
     glGenTextures(1, &texId);
     glBindTexture(GL_TEXTURE_2D, texId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, i.ancho,i.alto, 0, i.ncom==3?GL_RGB:GL_RGBA, GL_UNSIGNED_BYTE, i.image_data.get());

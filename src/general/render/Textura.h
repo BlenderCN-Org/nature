@@ -5,7 +5,7 @@
 class Textura{
        public:
            Textura();
-           Textura(Imagen& i);
+           Textura(const Imagen& i);
            Textura(const Textura&)=delete;
            Textura& operator=(const Textura&)=delete;
            Textura(Textura&&);

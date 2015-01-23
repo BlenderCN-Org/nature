@@ -18,9 +18,35 @@ public:
      Shader(Shader&&);
      Shader& operator=(Shader&&);
 
-     void init(const std::string& vsFile, const std::string& fsFile,std::map<std::string,std::string> vars={});
-
+    int loc(std::string n);
+    void setfloat(std::string n,float v);
+    void setfloat(std::string n,std::vector<float> &v);
+    void setfloat(std::string n,int size,float* v);
+    /**vec2***/
+    void setvec2(std::string n,glm::vec2 v);
+    void setvec2(std::string n,std::vector<glm::vec2> &v);
+    void setvec2(std::string n,int size,float* v);
+    /**vec3***/
+    void setvec3(std::string n,glm::vec3 v);
+    void setvec3(std::string n,std::vector<glm::vec3> &v);
+    void setvec3(std::string n,int size,float* v);
+    /**vec4***/
+    void setvec4(std::string n,glm::vec4 v);
+    void setvec4(std::string n,std::vector<glm::vec4> &v);
+    void setvec4(std::string n,int size,float* v);
+    /***Mat3***/
+    void setmat3(std::string n,glm::mat3 v);
+    void setmat3(std::string n,std::vector<glm::mat3> &v);
+    void setmat3(std::string n,int size,float* v);
+    /***Mat4***/
+    void setmat4(std::string n,glm::mat4 v);
+    void setmat4(std::string n,std::vector<glm::mat4> &v);
+    void setmat4(std::string n,int size,float* v);
+    void settexture(std::string n,int i,Textura& t);
+    void init(const std::string& vsFile, const std::string& fsFile,std::map<std::string,std::string> vars={});
+     
      void bind(const glm::mat4 &matModelo);
+     void bind();
      void bind(const glm::mat4 &matModelo,std::vector<glm::mat4> pose,std::vector<glm::mat4> bindPoses);
      void unbind();
 

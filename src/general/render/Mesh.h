@@ -2,7 +2,7 @@
 #define MESH_H
 
 #include <string>
-#include "util/GestorRutas.h"
+#include "util/Path.h"
 #include "openglnat.h"
 #include "Shader.h"
 #include "MeshDatos.h"
@@ -18,6 +18,7 @@ class Mesh
         Mesh& operator=(Mesh&&);
         virtual ~Mesh();
         void dibujar(Shader* shader,const glm::mat4 &modelMatrix,bool cullBack=true);
+        void dibujar(bool cullBack=true);
         void dibujar(Shader* shader,const glm::mat4 &modelMatrix,std::vector<glm::mat4> pose,std::vector<glm::mat4> bindPoses,bool cullBack=true);
         void bindAtributtes();
     private:

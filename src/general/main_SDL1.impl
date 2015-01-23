@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <AL/al.h>
+#include <AL/alc.h>
 #include "SDL/SDL.h"
 #include "SDL/SDL_main.h"
 
@@ -268,6 +270,11 @@ int main(int argc, char* argv[])
      * double-buffered window for use with OpenGL.
      */
     setup_opengl( width, height );
+
+    ALCdevice* device = alcOpenDevice(NULL);
+    ALCcontext* context = alcCreateContext(device, NULL);
+    alcMakeContextCurrent(context);
+
 #ifndef EMSCRIPTEN
     GLenum err = glewInit();
     if (GLEW_OK != err)
@@ -278,6 +285,7 @@ int main(int argc, char* argv[])
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
     SDL_ShowCursor(0);
+
 //    SDL_WM_GrabInput(SDL_GRAB_ON);
     juego=new Juego();
     controlCamara=juego;
@@ -290,6 +298,5 @@ int main(int argc, char* argv[])
        game_loop();
      }
      #endif // EMSCRIPTEN
-
   return 0;
 }
