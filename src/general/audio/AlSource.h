@@ -15,7 +15,7 @@ class AlSource{
         void setLoop(bool l);
         void play(AlBuffer& b);
     private:
-        ALuint source;
+        ALuint source=0;
 };
 #endif
 

@@ -1,0 +1,27 @@
+#include "Monstruo.h"
+#include "includeglm.h"
+#include <iostream>
+using namespace std;
+using namespace glm;
+void Monstruo::act(float dt){
+    if(p!=NULL){
+        float d=glm::distance(p->pos,this->pos);
+        vec3 dir=normalize(p->pos-this->pos);
+        mat4 mla=lookAt(this->pos,p->pos,vec3(0,0,1);
+        this->ro
+        if(d<3&&estado!=Estado::AtaqueBomba){
+              estado=Estado::AtaqueBomba;
+              this->vel=vec3(dir.x,dir.y,0)*5.0f+vec3(0,0,10);
+        }else if(estado!=Estado::AtaqueBomba){
+              estado=Estado::Caminando;
+       //       this->vel=vec3(dir.x,dir.y,0)*15.0f;
+        }
+    }
+    
+}
+void Monstruo::colisiona(Colision c){
+    if(estado==Estado::AtaqueBomba){
+        estado=Estado::Detenido;
+        this->vel=vec3(0,0,vel.z);
+    }
+}

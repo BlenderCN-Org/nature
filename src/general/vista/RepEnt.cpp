@@ -30,12 +30,11 @@ void RepEnt::dibujar(Camara& cam,Luz& l){
       sha->setmat4("boneTransforms",boneTransform);
   }
   mesh->dibujar();
-  
 };
 void RepEnt::act(float dt){
-    if(esq){
+  /*  if(esq){
         Personaje* p= (Personaje*) ent.get();
-       switch(p->estado){
+        switch(p->estado){
            case Personaje::Estado::Caminando:
                ani->animar("caminar",true);
            break;
@@ -51,9 +50,9 @@ void RepEnt::act(float dt){
            case Personaje::Estado::Parado:
                ani->animar("parado",true);
            break;
-       }
+       }*/
+      if(ani!=nullptr)
        ani->act(dt);
-    }
 
 }
 

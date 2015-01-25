@@ -2,7 +2,11 @@
 #define ENTIDAD_H
 #include "includeglm.h"
 #include "mapa/Cubo.h"
+#include "fisica/Colision.h"
 #include <string>
+#include "esqueleto/Hueso.h"
+#include "esqueleto/Esqueleto.h"
+#include "esqueleto/Animador.h"
 class Entidad
 {
      public:
@@ -21,6 +25,12 @@ class Entidad
           void moverA(glm::vec3 posicion);
           void desplazar(glm::vec3 desplazamiento);
           virtual void act(float dt){};
+          virtual void colisiona(Colision c){};
+          int h=-1;
+          Entidad* e;
+          Esqueleto* esq;
+          Animador* a;
+          bool destruye=false;
      private:
 
 };

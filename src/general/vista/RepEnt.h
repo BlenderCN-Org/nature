@@ -7,6 +7,8 @@
 #include "esqueleto/Animador.h"
 #include "render/Camara.h"
 #include "render/Luz.h"
+#include "audio/AlSource.h"
+#include "audio/AlBuffer.h"
 #include <memory>
 class RepEnt:public Rep{
     public:
@@ -15,6 +17,7 @@ class RepEnt:public Rep{
         std::unique_ptr<Esqueleto> esq;
         std::unique_ptr<Animador> ani;
         std::unique_ptr<Shader> sha;
+
         virtual void dibujar(Camara& cam,Luz& l);
         virtual void act(float dt);
         RepEnt()=default;

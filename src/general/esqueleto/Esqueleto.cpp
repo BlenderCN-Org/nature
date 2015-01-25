@@ -14,6 +14,7 @@ void imprimirMatriz3(glm::mat4 mat){
         cout<<")"<<endl;
     }
  }
+
 Esqueleto::Esqueleto(const string ruta){
        ifstream f;
        int nh; //numero de huesos
@@ -28,15 +29,21 @@ Esqueleto::Esqueleto(const string ruta){
               )/*}}}*/
             if(nh>0){
                 huesos.resize(nh);
+                cout<<"leer huesos"<<endl;
                 f.read((char*)huesos.data(),sizeof(Hueso)*nh);
             }
+
+            cout<<"huesos leidos"<<endl;
             for(Hueso& h:huesos){
                 glm::mat4 mat =glm::translate(glm::mat4(1.0f),h.cabeza)*glm::toMat4(glm::rotation(glm::vec3(0.0f),h.cola-h.cabeza));
                 bindPoses.push_back(mat);
             //    imprimirMatriz3(mat);
                 h.mat=mat;
             }
+
+            cout<<"leer animaciones"<<endl;
             f.read((char*)&na,sizeof(int));
+            cout<<"anims:"<<na<<endl;
             anims.resize(na);
 
             for(int i=0;i<na;i++){
@@ -44,7 +51,7 @@ Esqueleto::Esqueleto(const string ruta){
                int len;
                int cuadros;
                getline(f,a.nombre,'\0');
-               
+               cout<<"leer cuadros"<<endl;
                f.read((char*)&cuadros,sizeof(int));
                a.cuadros.resize(cuadros);
                int k=0;
@@ -54,7 +61,6 @@ Esqueleto::Esqueleto(const string ruta){
                    ce.huesos.resize(huesos.size());
                    f.read((char*)ce.huesos.data(),sizeof(CuadroHueso)*huesos.size());
                }
-
             }
        }
       /* 
@@ -79,6 +85,16 @@ Esqueleto::Esqueleto(const string ruta){
    }*/
 }
 
+int Esqueleto::getHueso(){
+    for(int i=0;i<huesos.size();i++){
+        Hueso &h=huesos[i];
+        if(h.espada==1){
+   //         cout<<"encontrado"<<endl;
+            return i;  
+        }
+    }
+    return -1;
+}
 Esqueleto::~Esqueleto(){
 }
 

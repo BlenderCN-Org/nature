@@ -5,5 +5,7 @@ class ControlJugador{
         virtual void presionaSalto(){}; 
         virtual void sueltaSalto(){}; 
         virtual void ejeMovimiento(float x,float y){}; 
+        virtual void atacar(){}; 
+        virtual void esquivar(){}; 
 };
 #endif

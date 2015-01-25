@@ -12,6 +12,8 @@ class Camara
           glm::mat4 getMatProy(){return mProy;};
           glm::vec3 getOrientacion();
           glm::mat4 getMat();
+          glm::vec3 forwardXY();
+          glm::vec3 leftXY();
           void rotar(glm::vec3 v);
           void desplazar(glm::vec3 v);
           glm::vec3 rot{0,0,0};

@@ -18,10 +18,13 @@ AlBuffer OggBuffer::cargar(string n ){
 
         if (bytes < 0)
             {
-            cerr << "Error decodificando" << n << "..." << endl;
+            cout << "Error decodificando" << n << "..." << endl;
             }
         buffer.insert(buffer.end(), bufferaux, bufferaux + bytes);
      }while (bytes > 0);
+     cout<<"Buffer size: "<<buffer.size()<<endl;
+     cout<<"Rate:"<<s.getRate()<<endl;
+     cout<<"Channels: "<<s.getChannels()<<endl;
     alBufferData(b.id(), s.getChannels()==1?AL_FORMAT_MONO16:AL_FORMAT_STEREO16,&buffer[0], static_cast<ALsizei>(buffer.size()), s.getRate());
     return move(b);
 }

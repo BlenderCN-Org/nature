@@ -7,6 +7,8 @@ class Hueso{
        glm::vec3 cabeza;
        glm::vec3 cola;
        glm::mat4 mat;
+       int espada;
+       int coli;
+       
 };
-
 #endif

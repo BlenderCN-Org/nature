@@ -14,14 +14,12 @@ using namespace std;
 using namespace glm;
 vector<RGB> Generador::paleta=vector<RGB>();
 void Generador::generar(Mapa *m,queue<Bloque> *cola, mutex* mt){
-    // int i=0;
      
      bool vacia=false;
      Bloque  b;
      Imagen fre{"mapas/isla/frente.png"};
      Imagen lat{"mapas/isla/lateral.png"};
      Imagen sup{"mapas/isla/superior.png"};
-    // std::chrono::milliseconds dura( 100 );
      do{
           mt->lock();
           if(!(vacia=cola->empty())){
@@ -111,7 +109,6 @@ void Generador::generarPerlin3d(Mapa *m, Bloque &b){
 	        }
 	     }
       }
-
 }
 
 void Generador::generarImagen(Mapa *m,Bloque &b,Imagen& sup,Imagen& lat,Imagen& fre){
@@ -157,6 +154,7 @@ void Generador::generarImagen(Mapa *m,Bloque &b,Imagen& sup,Imagen& lat,Imagen& 
         }
     }
 }
+
 void Generador::generarPlanicieRocosa(Mapa *m,Bloque &b){
       float factor=0.006;
       RGB grama{104,148,104};
@@ -178,15 +176,14 @@ void Generador::generarPlanicieRocosa(Mapa *m,Bloque &b){
                if(z<=altura){
                   c=grama; 
                }
-         if((it=find(paleta.begin(),paleta.end(),c))==paleta.end()){
-             paleta.push_back(c);
-             v.r=paleta.size()-1;
-         }else{
-             v.r=std::distance(paleta.begin(),it);
-         }
+               if((it=find(paleta.begin(),paleta.end(),c))==paleta.end()){
+                   paleta.push_back(c);
+                   v.r=paleta.size()-1;
+               }else{
+                   v.r=std::distance(paleta.begin(),it);
+               }
           }
 	      if(pos>0.40){
-
 		    float alturaNueva=(altura*2+pos*((float)m->getTamZ())/14*(pos+1.0));
 		    float nx=x;
 		    float ny=y;

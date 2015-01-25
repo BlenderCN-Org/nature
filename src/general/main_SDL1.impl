@@ -5,8 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include "audio/AL.h"
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <AL/alut.h>
 #include "SDL/SDL.h"
 #include "SDL/SDL_main.h"
 
@@ -16,6 +18,7 @@
 #endif // EMSCRIPTEN
 #include "render/Mesh.h"
 #include "Juego.h"
+using namespace std;
 Juego* juego;
 ControlCamara* controlCamara;
 const int SCREEN_WIDTH = 1024;
@@ -36,10 +39,8 @@ static void quit( int code )
 #ifndef EMSCRIPTEN
      delete juego;
     SDL_Quit();
-
     /* Exit program. */
-    
-    exit( code );
+    exit(code);
 #endif
 }
 
@@ -104,7 +105,8 @@ static void manejarTecla( SDL_keysym* keysym ,bool presionada)
     }
 
 }
-
+void init_audio(){
+}
 static void procesar_eventos( void )
 {
     /* Our SDL event placeholder. */
@@ -118,11 +120,18 @@ static void procesar_eventos( void )
         case SDL_MOUSEMOTION:
           xrel=event.motion.xrel;
             yrel=event.motion.yrel;
-        //  camRotZ=xrel*0.11;
-        //  camRotX=yrel*0.11;
-            controlCamara->ejes(event.motion.yrel/SCREEN_HEIGHT,-event.motion.xrel/SCREEN_WIDTH);
+  //          camRotZ=xrel*0.11;
+//            camRotX=yrel*0.11;
+            controlCamara->ejes(((float)event.motion.yrel)/((float)SCREEN_HEIGHT),((float)-event.motion.xrel)/((float)SCREEN_WIDTH));
 
             break;
+        case SDL_MOUSEBUTTONDOWN:
+            if(event.button.button==1){
+                juego->atacar();
+            }else
+            if(event.button.button==2){
+                juego->esquivar();
+            }
         case SDL_KEYDOWN:
             /* Handle key presses. */
             manejarTecla(&event.key.keysym,true);
@@ -183,6 +192,11 @@ int main(int argc, char* argv[])
     /* Dimensions of our window. */
     int width = SCREEN_WIDTH;
     int height = SCREEN_HEIGHT;
+
+     if(alutInit(0, NULL)==AL_FALSE){
+        cout<<"Fallo"<<endl;
+     };
+  cout<<OpenAl::error()<<endl;
     /* Color depth in bits of our window. */
     int bpp = 0;
     /* Flags we will pass into SDL_SetVideoMode. */
@@ -271,9 +285,25 @@ int main(int argc, char* argv[])
      */
     setup_opengl( width, height );
 
-    ALCdevice* device = alcOpenDevice(NULL);
+    /*ALCdevice* device = alcOpenDevice(NULL);
+    cout<<"device abrir:"<<OpenAl::error()<<endl;
     ALCcontext* context = alcCreateContext(device, NULL);
+    cout<<":"<<OpenAl::error()<<endl;
     alcMakeContextCurrent(context);
+*/
+const ALchar *pDeviceList = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
+if (pDeviceList)
+{
+    cout<<"\nAvailable Capture Devices are:-\n";
+
+    while (*pDeviceList)
+    {
+        cout<<std::string(pDeviceList)<<endl;
+        pDeviceList += strlen(pDeviceList) + 1;
+    }
+}
+    const char* devstr=alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
+    std::cout<<"Device:"<<std::string(devstr)<<std::endl;
 
 #ifndef EMSCRIPTEN
     GLenum err = glewInit();
@@ -286,7 +316,7 @@ int main(int argc, char* argv[])
 #endif
     SDL_ShowCursor(0);
 
-//    SDL_WM_GrabInput(SDL_GRAB_ON);
+    SDL_WM_GrabInput(SDL_GRAB_ON);
     juego=new Juego();
     controlCamara=juego;
   /*** (9) dispatch X events ***/
@@ -294,7 +324,7 @@ int main(int argc, char* argv[])
      #ifdef EMSCRIPTEN
        emscripten_set_main_loop(game_loop, 30,0);
      #else
-    while(1){
+     while(1){
        game_loop();
      }
      #endif // EMSCRIPTEN

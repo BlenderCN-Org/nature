@@ -38,4 +38,29 @@ vector<Colision> Colisionador::revColision(Entidad& e,Mapa& m){
         
     return move(cols);
 }
+Colision Colisionador::revColision(Entidad& e1,Entidad& e2){
+    vector<Colision> cols;
+    Cubo ce1= e1.getCubo();
+    Cubo ce2= e2.getCubo();
 
+        Colision c;
+c.colisiona=false;
+            if(ce2.p1.x < ce1.p2.x&&ce1.p1.x<ce2.p2.x)
+            {
+              if(ce2.p1.y < ce1.p2.y&&ce1.p1.y<ce2.p2.y)
+              {
+                 if(ce2.p1.z < ce1.p2.z&&ce1.p1.z<ce2.p2.z)
+                  {
+                      c.colisiona=true;
+                  }
+              }
+            }
+    return move(c);
+}
+
+Colision Colisionador::revColision(Esfera& e1,Esfera& e2){
+    Colision c;
+  //  cout<<"distancia:"<<glm::distance(e1.c,e2.c)<<endl;
+    c.colisiona=e1.r+e2.r>glm::distance(e1.c,e2.c);
+    return c;  
+}

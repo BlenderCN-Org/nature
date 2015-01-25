@@ -1,12 +1,11 @@
-#ifndef _REPPER_H_
-#define _REPPER_H_
+#ifndef _REPENE_H_
+#define _REPENE_H_
 #include "entidades/Personaje.h"
+#include "entidades/Monstruo.h"
 #include "RepEnt.h"
 
-
-class RepPer:public RepEnt{
+class RepEne:public RepEnt{
     public:
         virtual void act(float dt);
-
 };
 #endif

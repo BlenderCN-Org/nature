@@ -13,6 +13,7 @@ class Esqueleto{
         std::vector<AnimEsqueleto> anims;
         Esqueleto(std::string ruta);
         virtual ~Esqueleto();
+        int getHueso();
 };
 
 #endif

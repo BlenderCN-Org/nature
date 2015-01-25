@@ -24,7 +24,6 @@ Mapa::Mapa(int bloqx,int bloqy,int bloqz,float tamCubo):
                }
           }
      }
-
 }
 
 float Mapa::getTamCubo(){

@@ -11,14 +11,16 @@ void Fisica::aplicar(Entidad& entidad,Mapa& mapa,float dt){
     entidad.desplazar(entidad.vel*dt);
     vector<Colision> colisiones=col.revColision(entidad,mapa);
     for(Colision c:colisiones){
-//        cout<<"Z ant="<<pact.z<<"; Z act="<<entidad.pos.z<<endl;
-        entidad.pos=vec3(c.adir.x==0?entidad.pos.x:pact.x,c.adir.y==0?entidad.pos.y:pact.y,c.adir.z==0?entidad.pos.z:c.pos.z);
-        entidad.vel=vec3(c.adir.x==1?0:entidad.vel.x,c.adir.y==1?0:entidad.vel.y,c.adir.z==1?0:entidad.vel.z);
-//        entidad.ace=vec3(c.adir.x==1?0:entidad.ace.x,c.adir.y==1?0:entidad.ace.y,c.adir.z==1?0:entidad.ace.z);
-        //cout<<"dir.z:"<<c.adir.z<<" ; ace.z(2):"<<entidad.ace.z<<endl;
+        if(entidad.destruye){
+            entidad.pos=vec3(entidad.pos.x,c.adir.y==0?entidad.pos.y:pact.y,c.adir.z==0?entidad.pos.z:c.pos.z);
+            entidad.vel=vec3(entidad.vel.x,c.adir.y==1?0:entidad.vel.y,c.adir.z==1?0:entidad.vel.z);
+        }else{
+            entidad.pos=vec3(c.adir.x==0?entidad.pos.x:pact.x,c.adir.y==0?entidad.pos.y:pact.y,c.adir.z==0?entidad.pos.z:c.pos.z);
+            entidad.vel=vec3(c.adir.x==1?0:entidad.vel.x,c.adir.y==1?0:entidad.vel.y,c.adir.z==1?0:entidad.vel.z);
+        }
+        entidad.colisiona(c);
     }
     entidad.ace=vec3(0,0,0);
-
     DEBUG(/*{{{*/
         cout<<entidad.vel<<endl;
     )/*}}}*/

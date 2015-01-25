@@ -4,6 +4,7 @@
 #include "render/Mesh.h"
 #include "entidades/Entidad.h"
 #include "entidades/Personaje.h"
+#include "entidades/Monstruo.h"
 #include "vista/RepEnt.h"
 #include "vista/RepMap.h"
 #include <vector>
@@ -28,7 +29,7 @@ class Juego:public ControlCamara,ControlJugador
      public:
           float dtf=0.02f; //Tiempo fijo para el calculo de las fisicas
           float tacumf=0.0f; //Tiempo fijo para el calculo de las fisicas
-          std::vector<RepEnt>  rep;
+          std::vector<std::unique_ptr<RepEnt>>  rep;
           Juego();
           virtual ~Juego();
           void loop();
@@ -39,9 +40,14 @@ class Juego:public ControlCamara,ControlJugador
 /*control personaje*/
           virtual void presionaSalto(); 
           virtual void sueltaSalto(); 
+          virtual void atacar(); 
+          virtual void esquivar(); 
           virtual void ejeMovimiento(float x,float y); 
           void generarMapa();
           void render();
+          std::vector<Esfera> getEsferas(Hueso& h);
+          void colisionPersonajes();
+          void tomarEspada();
      private:
           Mapa mapa;
           Fisica fisica;
@@ -60,6 +66,8 @@ class Juego:public ControlCamara,ControlJugador
           AlListener listener;
           AlSource source;
           AlBuffer buffer;
+          bool primerEje=true;
+          bool lateral=false;
            
 };
 

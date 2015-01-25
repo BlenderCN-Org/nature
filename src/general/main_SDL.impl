@@ -109,6 +109,10 @@ static void procesar_eventos( void )
             /* Handle key presses. */
             manejarTecla(&event.key.keysym,false);
             break;
+        case SDL_MOUSEMOTION:
+-            std::cout<<"raton:"<<event.motion.xrel<<","<<event.motion.yrel<<std::endl;
+-            camRotZ=-event.motion.xrel*0.11;
+-            camRotX=-event.motion.yrel*0.11;
         case SDL_QUIT:
             /* Handle quit requests (like Ctrl-c). */
             quit( 0 );
@@ -201,7 +205,6 @@ bool init()
 
 
 void game_loop(){
-
          //std::cout<<"dibujar"<<std::endl;
        //  std::cout<<"procesar eventos"<<std::endl;
          procesar_eventos();
@@ -235,13 +238,12 @@ int main(int argc, char* argv[])
         juego=new Juego();
         controlCamara=juego;
       /*** (9) dispatch X events ***/
-
          #ifdef EMSCRIPTEN
-           emscripten_set_main_loop(game_loop, 30,0);
+            emscripten_set_main_loop(game_loop, 30,0);
          #else
-        while(1){
-           game_loop();
-         }
+            while(1){
+              game_loop();
+            }
          #endif // EMSCRIPTEN
       return 0;
     }

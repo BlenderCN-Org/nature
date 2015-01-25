@@ -24,6 +24,12 @@ glm::mat4  Camara::getMat(){
      return translate(mat4(1.0),pos)*matRot;
 }
 
+glm::vec3  Camara::forwardXY(){
+     return vec3(rotate(mat4(1.0),radians(rot.z),vec3(0,0,1))*vec4(0,1,0,0));
+}
+glm::vec3  Camara::leftXY(){
+     return vec3(rotate(mat4(1.0),radians(rot.z),vec3(0,0,1))*vec4(-1,0,0,0));
+}
 glm::vec3 Camara::getOrientacion(){
     return mat3(getMat())*glm::vec3(0.0f,0.0f,-1.0f);
 }
