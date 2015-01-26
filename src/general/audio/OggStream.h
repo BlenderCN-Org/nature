@@ -1,4 +1,4 @@
-#ifndef _OGG_STREAM_H_
+/*#ifndef _OGG_STREAM_H_
 #define _OGG_STREAM_H_
 #include <iostream>
 #include <vorbis/vorbisfile.h>
@@ -16,4 +16,4 @@ class OggStream{
         vorbis_info *pInfo;
 };
 #endif
-
+*/

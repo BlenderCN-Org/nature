@@ -50,7 +50,7 @@ void Monstruo::act(float dt){
                           this->direccion=glm::rotation(vec3(0,-1,0),dirh);
                      }else{ 
                           estado=Estado::AtaqueGirar;
-                          this->vel=dirh*45.0f;
+                          this->vel=dirh*35.0f;
                           this->direccion=glm::rotation(vec3(0,-1,0),dirh);
 
                      }
@@ -68,12 +68,16 @@ void Monstruo::act(float dt){
                    }
               break;
             case Estado::AtaqueBomba:
-
                  this->vel=dirh*8.0f+vec3(vel.x,vel.y,vel.z);
-                 if(dh<2||pos.z>zBomba+10){
+                 if(dh<2||dh>10||pos.z>zBomba+10){
                      vel.z=-30;
                      vel.x=0;
                      vel.y=0;
+                 }
+            break;
+            case Estado::AtaqueGirar:
+                 if(dh>10){
+                     this->vel=this->vel*0.8f;
                  }
             break;
             case Estado::Encerrado:

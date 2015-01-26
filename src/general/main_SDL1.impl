@@ -8,7 +8,6 @@
 #include "audio/AL.h"
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <AL/alut.h>
 #include "SDL/SDL.h"
 #include "SDL/SDL_main.h"
 
@@ -193,9 +192,6 @@ int main(int argc, char* argv[])
     int width = SCREEN_WIDTH;
     int height = SCREEN_HEIGHT;
 
-     if(alutInit(0, NULL)==AL_FALSE){
-        cout<<"Fallo"<<endl;
-     };
   cout<<OpenAl::error()<<endl;
     /* Color depth in bits of our window. */
     int bpp = 0;
@@ -220,6 +216,10 @@ int main(int argc, char* argv[])
         quit( 1 );
     }
 
+
+    ALCdevice* device = alcOpenDevice(NULL);
+    ALCcontext* context = alcCreateContext(device, NULL);
+    alcMakeContextCurrent(context);
     /*
      * Set our width/height to 640/480 (you would
      * of course let the user decide this in a normal

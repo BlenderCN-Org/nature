@@ -79,7 +79,7 @@ void Personaje::detenerSalto(){
     }
 }
 void Personaje::atacar(){
-    if(estado!=Estado::Muerto){
+    if(estado!=Estado::Muerto&&estado!=Estado::Herir){
   // if(estado==Estado::Caminando||
   //    estado==Estado::Corriendo||
  //     estado==Estado::Parado){

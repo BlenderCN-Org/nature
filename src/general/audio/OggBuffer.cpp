@@ -1,4 +1,4 @@
-#include "OggBuffer.h"
+/*#include "OggBuffer.h"
 #include <vector>
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -27,4 +27,4 @@ AlBuffer OggBuffer::cargar(string n ){
      cout<<"Channels: "<<s.getChannels()<<endl;
     alBufferData(b.id(), s.getChannels()==1?AL_FORMAT_MONO16:AL_FORMAT_STEREO16,&buffer[0], static_cast<ALsizei>(buffer.size()), s.getRate());
     return move(b);
-}
+}*/

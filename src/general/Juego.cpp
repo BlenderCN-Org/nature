@@ -322,7 +322,6 @@ void Juego::colisionPersonajes(){
                         eMons.c=vec3(mm*mmb*mmp*vec4(eMons.c,1));
                        Colision c=Colisionador::revColision(ePer,eMons);
                        if(c.colisiona){
-                           cout<<"Colisiona 1"<<endl;
                     //       if(m->estado!=Monstruo::Estado::AtaqueBomba||m->vel.z<0){
                               p->herir();
                       //     }

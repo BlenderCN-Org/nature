@@ -13,7 +13,7 @@
 using namespace std;
 using namespace glm;
 vector<RGB> Generador::paleta=vector<RGB>();
-void Generador::generar(Mapa *m,queue<Bloque> *cola, mutex* mt){
+/*void Generador::generar(Mapa *m,queue<Bloque> *cola, mutex* mt){
      
      bool vacia=false;
      Bloque  b;
@@ -21,12 +21,12 @@ void Generador::generar(Mapa *m,queue<Bloque> *cola, mutex* mt){
      Imagen lat{"mapas/isla/lateral.png"};
      Imagen sup{"mapas/isla/superior.png"};
      do{
-          mt->lock();
+          //mt->lock();
           if(!(vacia=cola->empty())){
               b=cola->front();
               cola->pop();
           }
-          mt->unlock();
+          //mt->unlock();
           if(!vacia)
 //               generarPlanicieRocosa(m,b);
                generarPerlin3d(m,b);
@@ -35,7 +35,7 @@ void Generador::generar(Mapa *m,queue<Bloque> *cola, mutex* mt){
      }while(!vacia);
 
 }
-
+*/
 void Generador::generar(Mapa *m,queue<Bloque> *cola){
     // int i=0;
      bool vacia=false;

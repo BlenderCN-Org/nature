@@ -1,4 +1,4 @@
-#ifndef _OGGBUFFER_H_
+/*#ifndef _OGGBUFFER_H_
 #define _OGGBUFFER_H_
 #include <string>
 #include "AlBuffer.h"
@@ -8,3 +8,4 @@ class OggBuffer{
     static AlBuffer cargar(std::string n);
 };
 #endif
+*/

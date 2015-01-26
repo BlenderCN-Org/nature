@@ -10,7 +10,7 @@
 #include "render/MeshDatos.h"
 class Generador{
 public:
-      void static generar(Mapa *m,std::queue<Bloque> *cola, std::mutex* mt);
+//      void static generar(Mapa *m,std::queue<Bloque> *cola, std::mutex* mt);
       void static generar(Mapa *m,std::queue<Bloque> *cola);
 
       void static generarPlanicieRocosa(Mapa *m,Bloque &b);
