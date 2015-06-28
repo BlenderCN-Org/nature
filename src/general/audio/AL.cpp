@@ -18,5 +18,5 @@ string OpenAl::error(){
             return " Out of memory like! ";
         break;
     }    
-
+ return "sin error";
 }

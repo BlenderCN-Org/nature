@@ -23,6 +23,7 @@ void main(void) {
    float oclu_value=1-ex_oclu.w*abs(dot(normalize(ex_oclu.xyz),normalize(vertex_normal)));
    oclu_value=1.0-ex_oclu.w*ex_oclu.w*0.5;
    out_color=vec4(ex_Color,1.0)*shadow_value*oclu_value+ambient_color;
+   out_color=vec4(ex_Color,1.0)+ambient_color;
 
    gl_FragColor=out_color;
 }

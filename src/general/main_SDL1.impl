@@ -187,6 +187,7 @@ void game_loop(){
 int main(int argc, char* argv[])
 {
 /* Information about the current video settings. */
+    cout<<"main"<<endl;
     const SDL_VideoInfo* info = NULL;
     /* Dimensions of our window. */
     int width = SCREEN_WIDTH;
@@ -217,6 +218,7 @@ int main(int argc, char* argv[])
     }
 
 
+    cout<<"iniciando Sonido"<<endl;
     ALCdevice* device = alcOpenDevice(NULL);
     ALCcontext* context = alcCreateContext(device, NULL);
     alcMakeContextCurrent(context);
@@ -314,10 +316,11 @@ if (pDeviceList)
     }
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
+    cout<<"Grabing Cursor"<<endl;
     SDL_ShowCursor(0);
-
     SDL_WM_GrabInput(SDL_GRAB_ON);
     juego=new Juego();
+    cout<<"Juego crfeado"<<endl;
     controlCamara=juego;
   /*** (9) dispatch X events ***/
 

@@ -19,6 +19,10 @@ public:
      Shader& operator=(Shader&&);
 
     int loc(std::string n);
+    void setint(std::string n,int v);
+    void setint(std::string n,std::vector<int> &v);
+    void setint(std::string n,int size,int* v);
+
     void setfloat(std::string n,float v);
     void setfloat(std::string n,std::vector<float> &v);
     void setfloat(std::string n,int size,float* v);

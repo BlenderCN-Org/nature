@@ -3,7 +3,8 @@
 using namespace std;
 ShadowMap::ShadowMap(int ancho,int alto):
 tcolor(),tdepth(){
-    fb.bind();
+    cout<<"Creando Shadow Map"<<endl;
+/*    fb.bind();
     tdepth.bind();
     //glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, ancho, alto, 0,GL_RGBA, GL_UNSIGNED_BYTE, 0);
     glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT32, ancho, alto, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
@@ -28,10 +29,10 @@ tcolor(),tdepth(){
 */
    // GLenum DrawBuffers[1] = {GL_NONE};
  //   glDrawBuffers(1, DrawBuffers);
-    glDrawBuffer(GL_NONE);
+/*    glDrawBuffer(GL_NONE);
     int est;
     if((est=glCheckFramebufferStatus(GL_FRAMEBUFFER) )!= GL_FRAMEBUFFER_COMPLETE)
        cout<<"error framebuffer:"<<est<<endl;
-    fb.unbind();
-
+    fb.unbind();/*
+*/
 };

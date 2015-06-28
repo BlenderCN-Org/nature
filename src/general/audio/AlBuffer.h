@@ -10,7 +10,7 @@
  */
 struct RIFF_Header {
   char chunkID[4];
-  long chunkSize;//size not including chunkSize or chunkID
+  char da[4];//size not including chunkSize or chunkID
   char format[4];
 };
 //#include <AL/alut.h>
@@ -20,11 +20,11 @@ struct RIFF_Header {
  */
 struct WAVE_Format {
   char subChunkID[4];
-  long subChunkSize;
+  int32_t subChunkSize;
   short audioFormat;
   short numChannels;
-  long sampleRate;
-  long byteRate;
+  int32_t sampleRate;
+  int32_t byteRate;
   short blockAlign;
   short bitsPerSample;
 };
@@ -33,7 +33,7 @@ struct WAVE_Format {
 */
 struct WAVE_Data {
   char subChunkID[4]; //should contain the word data
-  long subChunk2Size; //Stores the size of the data block
+  int32_t subChunk2Size; //Stores the size of the data block
 };
 class AlBuffer{
     public:

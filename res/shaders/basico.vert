@@ -23,9 +23,6 @@ varying vec2 ex_uv;
 varying vec4 ex_oclu;
 varying vec3 ex_vecVista;
 varying vec3 shadowPos;
-
-
-
 void main(void) {
     vec4 pos=modelMatrix*vec4(in_Position, 1.0);
     gl_Position = projectionMatrix*viewMatrix*pos;
@@ -35,6 +32,6 @@ void main(void) {
     ex_luz=luz;
     ex_uv=in_uv;
     ex_oclu=in_oclu;
-    ex_Color = in_Color;
+    ex_Color=in_Color;
     ex_vecVista=vec3(viewMatrixInv*vec4(0.0,0.0,0.0,1.0)-pos);
 }

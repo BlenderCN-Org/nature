@@ -16,9 +16,9 @@ void MeshDatos::cargar(std::string nombre){
     ifstream f;
     int nvert;
     int ncaras;
-    f.open(Path::mesh(nombre),  ios::in |  ios::binary);
+    f.open(nombre,  ios::in |  ios::binary);
     if(!f.is_open()){
-       cout<<"error abriendo"<<Path::mesh(nombre)<< endl;
+       cout<<"error abriendo"<<nombre<< endl;
     }else{
         f.read((char*)&nvert,sizeof(int));
           cout<<sizeof(int)<<":vertices="<<nvert<< endl;
@@ -72,6 +72,7 @@ MeshDatos MeshDatos::plano(float ancho,float alto){
 
     return move(d);
 }
+
 MeshDatos MeshDatos::linea(glm::vec3 v){
     MeshDatos d;
     int nv=4;

@@ -3,8 +3,10 @@
 #include <iostream>
 using namespace std;
 AlSource::AlSource(){
+ cout<< "Creando Source"<<endl;
   alGenSources(1, &source);
   cout<<OpenAl::error()<<endl;
+ cout<< "Source Creado"<<endl;
 }
 AlSource::~AlSource(){
   alDeleteSources(1, &source);

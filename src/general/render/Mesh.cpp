@@ -20,11 +20,14 @@ Mesh& Mesh::operator=(Mesh&& viejo){
    return *this;
 };
 
+Mesh::Mesh(string path):
+    Mesh(MeshDatos(path)){
+}
 Mesh::Mesh(MeshDatos d)
 {     
       usarVAO=false;
       nvert=d.vert.size();
-      cout<<"vertices*:"<<nvert<<endl;
+//      cout<<"vertices*:"<<nvert<<endl;
       ncaras=d.caras.size();
       glEnableVertexAttribArray(0);
       glGenBuffers(vbo.size(), &vbo[0]);
@@ -77,9 +80,9 @@ Mesh::Mesh(MeshDatos d)
         //glBindVertexArray(0);
       }
       GLenum error=glGetError();
-      if(error==GL_NO_ERROR){
-          cout<<"todo bien terminado"<< endl;
-      }
+      //if(error==GL_NO_ERROR){
+        //  cout<<"todo bien terminado"<< endl;
+//    }
 
 
 }
@@ -136,44 +139,15 @@ void Mesh::dibujar(bool cullBack)
 { 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE);
-    glCullFace(cullBack?GL_BACK:GL_FRONT);
-     if(!usarVAO){
-          bindAtributtes();
-     }else{
-     }
-     glDrawElements(GL_TRIANGLES, ncaras*3,GL_UNSIGNED_INT, (void*)0 ); // Draw our square
-}
-void Mesh::dibujar(Shader* shader,const glm::mat4 &modelMatrix,bool cullBack)
-{ 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE);
-    glCullFace(cullBack?GL_BACK:GL_FRONT);
-    shader->bind(modelMatrix);
-     if(!usarVAO){
-          bindAtributtes();
-     }else{
-     }
-     glDrawElements(GL_TRIANGLES, ncaras*3,GL_UNSIGNED_INT, (void*)0 ); // Draw our square
-     shader->unbind();
-     if(usarVAO){
-     }
-}
 
-void Mesh::dibujar(Shader* shader,const glm::mat4 &modelMatrix,vector<glm::mat4> pose,vector<glm::mat4> bindPoses,bool cullBack){
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+
     glEnable(GL_CULL_FACE);
     glCullFace(cullBack?GL_BACK:GL_FRONT);
-    shader->bind(modelMatrix,pose,bindPoses);
+//    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
      if(!usarVAO){
           bindAtributtes();
      }else{
      }
      glDrawElements(GL_TRIANGLES, ncaras*3,GL_UNSIGNED_INT, (void*)0 ); // Draw our square
-     shader->unbind();
-     if(usarVAO){
-     }
-   shader->unbind();
+//     glDrawElements(GL_LINES, ncaras*3,GL_UNSIGNED_INT, (void*)0 ); // Draw our square
 }

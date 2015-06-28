@@ -4,6 +4,7 @@
 #include <fstream>
 #include "util/Path.h"
 #include "config.h"
+#include <assert.h>
 using namespace std;
 void imprimirMatriz3(glm::mat4 mat){
     for(int y=0;y<4;y++){
@@ -28,9 +29,18 @@ Esqueleto::Esqueleto(const string ruta){
               cout<<sizeof(int)<<":huesos="<<nh<<endl;
               )/*}}}*/
             if(nh>0){
-                huesos.resize(nh);
-                cout<<"leer huesos"<<endl;
-                f.read((char*)huesos.data(),sizeof(Hueso)*nh);
+//                huesos.resize(nh);
+                for(int i=0;i<nh;i++){
+                    Hueso h;
+                    cout<<"leer huesos"<<endl;
+                    getline(f,h.nombre,'\0');
+                    f.read((char*)&h.padre,sizeof(h.padre));
+                    f.read((char*)&h.cabeza,sizeof(h.cabeza));
+                    f.read((char*)&h.cola,sizeof(h.cola));
+                    f.read((char*)&h.mat,sizeof(h.mat));
+                    f.read((char*)&h.coli,sizeof(h.coli));
+                    huesos.push_back(h);
+                }
             }
 
             cout<<"huesos leidos"<<endl;
@@ -42,7 +52,11 @@ Esqueleto::Esqueleto(const string ruta){
             }
 
             cout<<"leer animaciones"<<endl;
+
+
             f.read((char*)&na,sizeof(int));
+
+            assert(na<100);
             cout<<"anims:"<<na<<endl;
             anims.resize(na);
 
@@ -88,7 +102,7 @@ Esqueleto::Esqueleto(const string ruta){
 int Esqueleto::getHueso(){
     for(int i=0;i<huesos.size();i++){
         Hueso &h=huesos[i];
-        if(h.espada==1){
+        if(h.nombre.compare("arma")==0){
    //         cout<<"encontrado"<<endl;
             return i;  
         }

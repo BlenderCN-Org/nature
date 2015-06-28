@@ -17,6 +17,7 @@ Mapa::Mapa(int bloqx,int bloqy,int bloqz,float tamCubo):
      tamCubo{tamCubo},
      datos{static_cast<vector<Voxel>::size_type>( tamx*tamy*tamz),Voxel{}}
 {
+    cout<<"Creando Mapa"<<endl;
      for(int bz=0;bz<bloqz;++bz){
           for(int by=0;by<bloqy;++by){
                for(int bx=0;bx<bloqx;++bx){
@@ -24,6 +25,7 @@ Mapa::Mapa(int bloqx,int bloqy,int bloqz,float tamCubo):
                }
           }
      }
+     cout<<"Mapa Creado"<<endl;
 }
 
 float Mapa::getTamCubo(){

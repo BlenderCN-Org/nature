@@ -1,14 +1,14 @@
-#version 100
-
+#version 100 
 // in_Position was bound to attribute index 0 and in_Color was bound to attribute index 1
 attribute  vec3 in_Position;
-attribute vec3 in_Color;
+attribute  vec3 in_Color;
 attribute  vec3 in_Normal;
 attribute  float in_idHueso;
 attribute  float in_peso;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
+uniform mat4 viewMatrixInv;
 uniform mat4 modelMatrix;
 uniform mat4 normalMatrix;
 uniform vec3 vecVista;
@@ -25,6 +25,6 @@ void main(void) {
     gl_Position = projectionMatrix*viewMatrix*(pos);
     vertex_normal=normalize(mat3(normalMatrix)*in_Normal);
     luz=normalize(vec3(0.4,-0.4,1.0));
-    ex_Color = in_Color*0.3;
-    ex_vecVista=vec3(viewMatrix*vec4(0.0,0.0,0.0,1.0)-pos);
+    ex_Color = in_Color*0.5;
+    ex_vecVista=vec3((viewMatrixInv)*vec4(0.0,0.0,0.0,1.0)-pos);
 }

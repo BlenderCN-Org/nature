@@ -12,6 +12,7 @@ class Mesh
 {
     public:
         Mesh(MeshDatos d);
+        Mesh(std::string path);
         Mesh(const Mesh&)=delete;
         Mesh& operator=(const Mesh&) = delete;
         Mesh(Mesh&&);

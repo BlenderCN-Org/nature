@@ -16,7 +16,7 @@ class CamSegPaj:public ControlCamara{
        bool lateral=false;
    private:
        glm::vec3 rot;
-       float minx=90;
+       float minx=45;
        float maxx=120;
        float minz=-179;
        float maxz=179;

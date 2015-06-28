@@ -1,8 +1,8 @@
-#version 100 
+#version 330
 // in_Position was bound to attribute index 0 and in_Color was bound to attribute index 1
-attribute  vec3 in_Position;
-attribute float esCabeza;
-attribute float _idHueso;
+layout(location = 0) in  vec3 in_Position;
+layout(location = 1) in  float esCabeza;
+layout(location = 2) in  float _idHueso;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -13,7 +13,7 @@ uniform mat4 bindPose[6];
 uniform vec3 colores[6];
 
 /**Salida**/
-varying vec3 ex_Color;
+out vec3 ex_Color;
 
 
 

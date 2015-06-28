@@ -63,8 +63,9 @@ void Generador::generar(Mapa *m,queue<Bloque> *cola){
               cola->pop();
           }
           if(!vacia)
-               //generarPlanicieRocosa(m,b);
-               generarPerlin3d(m,b);
+//               generarPlanicieRocosa(m,b);
+               generarPajaro(m,b);
+               //generarPerlin3d(m,b);
 //               generarImagen(m,b,sup,lat,fre);
 
      }while(!vacia);
@@ -74,15 +75,50 @@ void Generador::generar(Mapa *m,queue<Bloque> *cola){
 
 }
 
+void Generador::generarPajaro(Mapa *m, Bloque &b){
+      RGB grama{104,148,104};
+      RGB gramao{84,128,84};
+      RGB negro{0,0,0};
+      RGB tierra{148,137,100};
+      RGB arena{168,157,120};
+      RGB roca{60,60,60};
+      RGB c;
+      bool osc=false;
 
+      vector<RGB>::iterator it;
+      for(float y=b.y;y<b.y+b.tam;++y){
+	     for(float x=b.x;x<b.x+b.tam;++x){
+             for(float z=b.z;z<b.z+b.tam;++z){
+               Voxel &v=m->getVoxel(x,y,z);
+               c=negro;
+              if(((int)x)%2==0)
+                    osc=true;
+              else
+                  osc=false;
+              if(((int)y)%2==0)
+                  osc=!osc;
+               if(z<=10){
+                  c=osc?gramao:grama; 
+               }
+               if((it=find(paleta.begin(),paleta.end(),c))==paleta.end()){
+                   paleta.push_back(c);
+                   v.r=paleta.size()-1;
+               }else{
+                   v.r=std::distance(paleta.begin(),it);
+               }
+           }
+
+         }
+      }
+}
 void Generador::generarPerlin3d(Mapa *m, Bloque &b){
       RGB grama{104,148,104};
       RGB negro{0,0,0};
       RGB tierra{148,137,100};
+      RGB roca{60,60,60};
       RGB c=grama;
       for(float y=b.y;y<b.y+b.tam;++y){
 	     for(float x=b.x;x<b.x+b.tam;++x){
-
                float pos=SimplexNoise1234::noise(x*0.0008,y*0.0008);
                pos=(pos+1.0f)/2.0f;
                int altura=1+pos*(m->getTamZ()-1);
@@ -94,6 +130,8 @@ void Generador::generarPerlin3d(Mapa *m, Bloque &b){
                     Voxel& v=m->getVoxel(x,y,z);
                     if(z>=altura-2){
                         c=grama;
+                    }else if(z>3){
+                        c=roca;
                     }else{
                         c=tierra;
                     }

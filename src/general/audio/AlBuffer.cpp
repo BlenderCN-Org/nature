@@ -3,16 +3,19 @@
 #include <iostream>
 using namespace std;
 AlBuffer::AlBuffer(){
-
-//    alGenBuffers(1, &buffer);
+ cout<< "Creando Buffer"<<endl;
+    alGenBuffers(1, &buffer);
+ cout<< "Buffer Creado"<<endl;
 }
 AlBuffer::AlBuffer(std::string n){
     //buffer=alutCreateBufferFromFile(n);
     //
+ cout<< "Creando Buffer"<<endl;
     ALsizei freq;
     ALsizei size;
     ALenum format;
-//    loadWavFile(std::string(n),&buffer,&size,&freq,&format);
+ cout<< "Buffer Creado"<<endl;
+    loadWavFile(std::string(n),&buffer,&size,&freq,&format);
     
 }
 AlBuffer::~AlBuffer(){
@@ -34,12 +37,22 @@ bool AlBuffer::loadWavFile(const std::string filename, ALuint* buffer, ALsizei* 
   try {
     soundFile = fopen(filename.c_str(), "rb");
     if (!soundFile)
-     // throw (filename);
+      throw (filename);
  
     // Read in the first chunk into the struct
     fread(&riff_header, sizeof(RIFF_Header), 1, soundFile);
  
     //check for RIFF and WAVE tag in memeory
+     cout<<riff_header.chunkID[0];
+     cout<<riff_header.chunkID[1];
+     cout<<riff_header.chunkID[2];
+     cout<<riff_header.format[3];
+     cout<<"--"<<endl;;
+     cout<<riff_header.format[0];
+     cout<<riff_header.format[1];
+     cout<<riff_header.format[2];
+     cout<<riff_header.format[3];
+     cout<<"--"<<endl;;
     if ((riff_header.chunkID[0] != 'R' ||
          riff_header.chunkID[1] != 'I' ||
          riff_header.chunkID[2] != 'F' ||
@@ -48,7 +61,7 @@ bool AlBuffer::loadWavFile(const std::string filename, ALuint* buffer, ALsizei* 
          riff_header.format[1] != 'A' ||
          riff_header.format[2] != 'V' ||
          riff_header.format[3] != 'E'))
-            // throw ("Invalid RIFF or WAVE Header");
+             throw (string("Invalid RIFF or WAVE Header"));
  
     //Read in the 2nd chunk for the wave info
     fread(&wave_format, sizeof(WAVE_Format), 1, soundFile);
@@ -57,7 +70,7 @@ bool AlBuffer::loadWavFile(const std::string filename, ALuint* buffer, ALsizei* 
         wave_format.subChunkID[1] != 'm' ||
         wave_format.subChunkID[2] != 't' ||
         wave_format.subChunkID[3] != ' ')
-             //throw ("Invalid Wave Format");
+             throw (string("Invalid Wave Format"));
  
     //check for extra parameters;
     if (wave_format.subChunkSize > 16)
@@ -70,14 +83,14 @@ bool AlBuffer::loadWavFile(const std::string filename, ALuint* buffer, ALsizei* 
         wave_data.subChunkID[1] != 'a' ||
         wave_data.subChunkID[2] != 't' ||
         wave_data.subChunkID[3] != 'a')
-            // throw ("Invalid data header");
+             throw (string("Invalid data header"));
  
     //Allocate memory for data
     data = new unsigned char[wave_data.subChunk2Size];
  
     // Read in the sound data into the soundData variable
     if (!fread(data, wave_data.subChunk2Size, 1, soundFile))
-       // throw ("error loading WAVE data into struct!");
+        throw (string("error loading WAVE data into struct!"));
  
     //Now we set the variables that we passed in with the
     //data from the structs

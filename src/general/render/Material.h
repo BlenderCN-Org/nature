@@ -3,5 +3,5 @@
 #include <memory>
 class Material{
     virtual void bind();
-}
+};
 #endif 

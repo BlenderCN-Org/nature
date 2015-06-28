@@ -1,6 +1,5 @@
 #ifndef CAMARA_H
 #define CAMARA_H
-#include "entidades/Entidad.h"
 #include "includeglm.h"
 
 class Camara

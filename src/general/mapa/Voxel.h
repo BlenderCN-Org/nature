@@ -7,8 +7,8 @@ struct Voxel{
 //      bool solido=false;
       unsigned char r:7;//color r
       bool solido(){ return r!=0;}
-//      unsigned char g;//color g
-//      unsigned char b;//color b
+      unsigned char g;//color g
+ //     unsigned char b;//color b
 //      unsigned char a;//color a
 
 };

@@ -27,7 +27,7 @@ static void validateShader(GLuint shader, const char* file = 0) {
 
 	glGetShaderInfoLog(shader, BUFFER_SIZE, &length, buffer);
 	if (length > 0) {
-		cerr << "Shader " << shader << " (" << (file?file:"") << ") compile error: " << buffer << endl;
+		cout << "Shader " << shader << " (" << (file?file:"") << ") compile error: " << buffer << endl;
 	}
 }
 
@@ -138,7 +138,9 @@ unsigned int Shader::id() {
 	return shader_id;
 }
 void Shader::bind() {
+
     if(shader_id>0){
+//        cout<<"enlazando:"<<shader_id<<endl;
         glUseProgram(shader_id);
     }
 }
@@ -203,7 +205,16 @@ void Shader::unbind() {
 int Shader::loc(string n){
     return  glGetUniformLocation(shader_id, n.c_str());
 }
-
+void Shader::setint(string n,int v){
+    glUniform1i(loc(n),   v); 
+}/*
+void Shader::setint(string n,vector<int> &v){
+    glUniform1iv(loc(n), v.size(), &v[0]); 
+}
+void Shader::setint(string n,int size,int* v){
+    glUniform1i(loc(n), size, v); 
+}
+*/
 void Shader::setfloat(string n,float v){
     glUniform1f(loc(n),   v); 
 }

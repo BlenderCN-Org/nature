@@ -14,8 +14,6 @@ Animador::Animador(Esqueleto& e):
 void Animador::animar(string n,bool loop,bool reiniciar){
     int idAux=hashs[n];
     if(reiniciar||idAux!=aniId){
-  //      cout<<n<<":"<<aniId<<endl;
-//        cout<<"reiniciando idAux,aniID: "<<idAux<<"("<<esq.anims[idAux].nombre<<"),"<<aniId<<"("<<esq.anims[aniId].nombre<<")"<<endl;
         aniId=idAux;
         t=0;
         this->loop=loop;
