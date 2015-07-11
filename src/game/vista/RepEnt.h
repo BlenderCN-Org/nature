@@ -17,6 +17,7 @@ class RepEnt{
     public:
         MeshManager::ResHanType mesh;
         ShaderManager::ResHanType sha;
+        TextureManager::ResHanType tex;
 
 //        std::unique_ptr<Mesh> mesh;
   //      std::unique_ptr<Shader> sha;

@@ -1,5 +1,6 @@
 #include "RepSer.h"
 #include "entidades/Entidad.h"
+#include "shaders/ShaTexture.h"
 using namespace std;
 using namespace glm;
 void RepSer::dibujar(Entidad* ent,Camara& cam,Luz& l){
@@ -30,7 +31,8 @@ void RepSer::dibujar(Entidad* ent,Camara& cam,Luz& l){
   ShaBasic::setBindPoseInv(*sha,bindPosesInv);
   ShaBasic::setNormalBone(*sha,normalBone);
   ShaBasic::setBoneTran(*sha,boneTransform);
-           
+  if(tex.get()!=nullptr)
+      ShaTexture::setTexColor(*sha,*tex);
   mesh->dibujar();
 
 

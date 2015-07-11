@@ -172,12 +172,12 @@ static void setup_opengl( int width, int height )
 }
 
 void game_loop(){
-         procesar_eventos();
+         //procesar_eventos();
          float total=abs(camMovX)+abs(camMovY);
          total=total==0?1:total;
 //         std::cout<<"t(x,y):"<<total<<"("<<camMovX/total<<","<<camMovY/total<<")"<<std::endl;
-         controlCamara->movimiento(camMovX/total,camMovY/total,camMovZ);
-         controlCamara->ejes(camRotX,camRotZ);
+         //controlCamara->movimiento(camMovX/total,camMovY/total,camMovZ);
+         //controlCamara->ejes(camRotX,camRotZ);
          glClearColor(0.2,0.7,0.9,1);
          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
          juego->loop();
@@ -200,7 +200,7 @@ int main(int argc, char* argv[])
     int flags = 0;
 
     /* First, initialize SDL's video subsystem. */
-    if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+    if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0 ) {
         /* Failed, exit. */
         fprintf( stderr, "Video initialization failed: %s\n",
              SDL_GetError( ) );

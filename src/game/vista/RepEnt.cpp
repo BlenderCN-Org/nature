@@ -1,6 +1,7 @@
 #include "RepEnt.h"
 #include "entidades/Entidad.h"
 #include "entidades/Personaje.h"
+#include "shaders/ShaTexture.h"
 using namespace std;
 using namespace glm;
 
@@ -13,6 +14,8 @@ void RepEnt::dibujar(Entidad* ent,Camara& cam,Luz& l){
   ShaBasic::setNormalMat(*sha,transpose(inverse(ent->getMatModelo())));
   ShaBasic::setVecVista(*sha,cam.getOrientacion());
   ShaBasic::setVecLuz(*sha,l.pos);
+  if(tex.get()!=nullptr)
+      ShaTexture::setTexColor(*sha,*tex);
   mesh->dibujar();
  // cout<<"dibujando"<<endl;
 

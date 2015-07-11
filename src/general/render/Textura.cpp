@@ -7,6 +7,8 @@ Textura::Textura(){
     glBindTexture(GL_TEXTURE_2D, texId);
 
 }
+Textura::Textura(std::string path):Textura(Imagen(path)){
+}
 Textura::Textura(const Imagen& i){
     glGenTextures(1, &texId);
     glBindTexture(GL_TEXTURE_2D, texId);
@@ -27,8 +29,9 @@ Textura& Textura::operator=(Textura&& n){
 Textura::~Textura(){
     glDeleteTextures(1,&texId);
 };
-void Textura::Textura::bind(){
+void Textura::bind(){
     glBindTexture(GL_TEXTURE_2D, texId);
+//    cout<<"binding:"<<texId<<endl;
 };
 
 GLuint Textura::id(){

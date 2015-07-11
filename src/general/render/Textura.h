@@ -2,10 +2,12 @@
 #define _TEXTURA_H_
 #include "openglnat.h"
 #include "util/Imagen.h"
+#include <string>
 class Textura{
        public:
            Textura();
            Textura(const Imagen& i);
+           Textura(std::string  path);
            Textura(const Textura&)=delete;
            Textura& operator=(const Textura&)=delete;
            Textura(Textura&&);

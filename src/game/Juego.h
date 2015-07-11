@@ -7,6 +7,7 @@
 #include "entidades/Monstruo.h"
 #include "vista/RepEnt.h"
 #include "vista/RepMap.h"
+#include "vista/RepMapCub.h"
 #include <vector>
 #include <memory>
 #include "control/ControlCamara.h"
@@ -24,6 +25,7 @@
 #include "audio/AlBuffer.h"
 #include "audio/OggBuffer.h"
 #include "audio/AlListener.h"
+#include "control/SDLInput.h"
 class Juego:public ControlCamara,ControlJugador
 {
      public:
@@ -51,13 +53,15 @@ class Juego:public ControlCamara,ControlJugador
 
      private:
           Mapa mapa;
+          SDLInput input;
           Fisica fisica;
           Camara camara;
 
           Tiempo t;
           float tanim=0.0f;
           std::unique_ptr<ControlCamara> ctrCam;
-          std::unique_ptr<RepMap> repMapa;
+          std::unique_ptr<RepMapCub> repMapa;
+         // std::unique_ptr<RepMapCub> repMapa;
           Luz luz;
           glm::mat4 matLuz;
           AlListener listener;

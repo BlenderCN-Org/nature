@@ -27,7 +27,7 @@ void imprimirMatriz(mat4 mat){
 }
 Juego::Juego():
 mapa{20,20,1},
-camara(45.0f, 1024.0f / 680.0f, 1.0f, 2000.f)
+camara(45.0f, 1024.0f / 680.0f, 1.0f, 42.f)
 {
     cout<<"creando Sonido"<<endl;
     ent.reserve(10);
@@ -43,12 +43,12 @@ camara(45.0f, 1024.0f / 680.0f, 1.0f, 2000.f)
      source.setVel(vec3(0,0,0));
      luz.pos=vec3(-0.2,-1,0.6);
      unique_ptr<Personaje> repCubico=unique_ptr<Personaje>(new Personaje(Esqueleto("armas/espadagrande/esqueleto.mesh.esq")));
-     repCubico->pos=vec3(100,10,60);
+     repCubico->pos=vec3(100,10,10);
      repCubico->rep=RepFactory::being(repCubico->type);
 
      unique_ptr<Ser> repSer= unique_ptr<Ser>(new Ser(Esqueleto("turos.mesh.esq")));
      repSer->rep=RepFactory::being(repSer->type);
-     repSer->pos=vec3(100,15,55);
+     repSer->pos=vec3(100,15,15);
  
      ctrCam=unique_ptr<ControlCamara>(new CamSegPaj(vec3(90,0,-22),repCubico.get(),repSer.get(),&camara));
      ent.push_back(move(repCubico));
@@ -67,6 +67,7 @@ camara(45.0f, 1024.0f / 680.0f, 1.0f, 2000.f)
 
 Juego::~Juego()
 {
+    
 }
 
 void Juego::ejes(float x,float z){
@@ -120,14 +121,16 @@ void Juego::generarMapa()
      MeshDatos md("mapa");
     // Generador::generarVoxelizar(&mapa,md,1.0);
      mapa.detectarBordes();
-     repMapa.reset(new RepMap(mapa));
-     repMapa->sha=unique_ptr<Shader>(new Shader(Path::shader("basico.vert"),Path::shader("basico.frag")));
+     repMapa=RepFactory::mapa(mapa);
+     //repMapa->sha=unique_ptr<Shader>(new Shader(Path::shader("basico.vert"),Path::shader("basico.frag")));
    //  repMapa->meshUnica=unique_ptr<Mesh>(new Mesh(md));
 }
 void Juego::loop()
 {
    t.actualizar();
    tacumf+=t.delta();
+   Personaje* p=(Personaje*) ent[0].get();
+   input.act(t.delta(),p);
    while(tacumf>0.02f){
        for (auto &e:ent){
            fisica.aplicar(*e,mapa,0.02f);

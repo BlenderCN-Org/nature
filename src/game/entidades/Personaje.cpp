@@ -77,6 +77,8 @@ void Personaje::detenerSalto(){
 }
 void Personaje::atacar(){
     if(estado!=Estado::Muerto&&estado!=Estado::Herir){
+//        vel.x=0;
+  //      vel.y=0;
   // if(estado==Estado::Caminando||
   //    estado==Estado::Corriendo||
  //     estado==Estado::Parado){
@@ -137,11 +139,13 @@ void Personaje::herir(){
 void Personaje::ejesMover(float x, float y){
     if(estado!=Estado::Muerto){
         if(x!=0.0f||y!=0){
-          if(estado!=Estado::Saltando&&estado!=Estado::Cayendo&&estado!=Estado::Atacando&&estado!=Estado::Herir){
+//          if(estado!=Estado::Saltando&&estado!=Estado::Cayendo&&estado!=Estado::Atacando&&estado!=Estado::Herir){
+          if(estado!=Estado::Saltando&&estado!=Estado::Cayendo&&estado!=Estado::Herir){
               direccion=quat(vec3(0,0,orientedAngle(normalize(vec3(x,y,0)),vec3(0,-1,0),vec3(0,0,-1))));
               vel.x=x*5.5f;
               vel.y=y*5.5f;
-              camEst(Estado::Corriendo);
+              if(estado!=Estado::Atacando)
+                  camEst(Estado::Corriendo);
           }else{
 /*              vel.x=x*5.5f;
               vel.y=y*5.5f;*/
